@@ -68,6 +68,8 @@
 \begin{minipage}{0.4\textwidth}
 \begin{center} \large
 Andy \textsc{Goetz}, Bradon \textsc{Kanyid}, Mikhail \textsc{Kulakevich}\\
+\hspace{3\textheight}
+\emph{Advisor:} Dr. Richard \textsc{Tymerski}
 \end{center}
 \end{minipage}
 
@@ -105,22 +107,78 @@ Andy \textsc{Goetz}, Bradon \textsc{Kanyid}, Mikhail \textsc{Kulakevich}\\
 
 \section{Overview}
 
+The purpose of this document is to lay out the requirements for the
+MTS Load Frame Control and Logging Capstone project. In general terms,
+the scope of this project involves integrating the 22 kip Load Frame
+in the EB370 Lab with an existing hydraulic pump and
+servocontroller. Additionally, the project will create a user-friendly
+interface, complete with data logging and safety interlocks. 
+
 \newpage
 
 \tableofcontents
 
 \newpage
 
-\section{Specification}
+\section{Requirements}
 
+This document is organized in to a collection of individual
+requirements, in no specific order. Detailed specifications of these
+requirements will be part of the next version of this document. 
 
+\subsection{Safety}
+Because of the large forces inherent in this project, there are
+several safety requirements that are perhaps unfamiliar to ECE
+students. 
 
+\subsubsection{Emergency Stop} 
+The system must contain an emergency stop button that immediately
+prevents the movement of the load frame ram. 
 
-\section{Assumptions}
+\subsubsection{Limit detection}
+The system must have some way of limiting the movement of the load
+frame ram from extending past its minimum and maximum position. 
 
+\subsection{User Interface}
 
+The user interface section of this document describes both the
+requirements for the user interface, as well as the requirements for
+the mechanical of the load frame in general.
 
+\subsubsection{Status Display} 
 
-\section{Pseudocode}
+The user interface must display the current status of the load frame,
+as well as the position and load on the load cell at all times.
+
+\subsubsection{Frame Controls} 
+
+The user interface must allow the load frame to be manually moved up
+and down, as well as being automatically moved.
+
+\subsection{Data Logging}
+
+In order to allow the load frame to be used for educational purposes,
+the load frame must have detailed data logging capabilities. 
+
+\subsubsection{Labview Compatibility}
+
+In order to take advantage of existing teaching methodologies, the
+load frame data logging features must be useable from the National
+Instruments Labview Software. 
+
+\subsubsection{Load and Position Logging}
+
+The position and load on the load cell must be capable of being logged. 
+
+\subsubsection{Clip-on and Extensiometer Logging}
+
+The load frame must be capable of logging the output of up to 4
+clip-on sensors simultaneously, as well as a laser extensiometer.
+
+\subsection{Budget}
+This project has a maximum budget of \$1000 dollars, not including
+parts already purchased, including the MTS Load Frame, the servo
+controller, and hydraulic pump. 
 
 \end{document}
+
