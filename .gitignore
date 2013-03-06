@@ -1,3 +1,4 @@
 *-cache.lib
 *.bck
 *.bak
+$*.brd
