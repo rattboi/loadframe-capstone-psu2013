@@ -1,4 +1,4 @@
-PCBNEW-LibModule-V1  Thu 28 Mar 2013 12:32:50 PM PDT
+PCBNEW-LibModule-V1  Thu 28 Mar 2013 04:42:04 PM PDT
 # encoding utf-8
 Units mm
 $INDEX
@@ -14,22 +14,20 @@ shrouded_5x2
 shrouded_8x2
 $EndINDEX
 $MODULE 1pin_mech
-Po 0 0 0 15 51549AE0 00000000 ~~
+Po 0 0 0 15 5154D546 00000000 ~~
 Li 1pin_mech
-Cd module 1 pin (ou trou mecanique de percage)
-Kw DEV
 Sc 0
-AR 1pin_mech
+AR 
 Op 0 0 0
-T0 0 -1200 400 400 0 100 N V 21 N "1PIN"
-T1 0 1100 400 400 0 100 N I 21 N "P***"
-DC 0 0 0 0 0.15 21
+T0 0 0 1 1 0 0.15 N V 21 N "1pin_mech"
+T1 0 0 1 1 0 0.15 N V 21 N "VAL**"
 $PAD
-Sh "1" C 4.064 4.064 0 0 0
+Sh "" C 4.064 4.064 0 0 0
 Dr 3.2512 0 0
 At STD N 00E0FFFF
 Ne 0 ""
 Po 0 0
+.ZoneConnection 2
 $EndPAD
 $EndMODULE 1pin_mech
 $MODULE 39-29-9242
