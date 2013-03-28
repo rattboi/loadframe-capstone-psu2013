@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon 25 Mar 2013 03:30:28 PM PDT
+EESchema Schematic File Version 2  date Thu 28 Mar 2013 10:33:58 AM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ $Descr User 11000 8500
 encoding utf-8
 Sheet 1 4
 Title ""
-Date "25 mar 2013"
+Date "28 mar 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -406,13 +406,13 @@ $EndComp
 $Comp
 L TST P102
 U 1 1 514CFA51
-P 5700 1300
-F 0 "P102" H 5700 1550 40  0000 C CNN
-F 1 "TST" H 5700 1250 30  0000 C CNN
-F 2 "" H 5700 1300 60  0000 C CNN
-F 3 "" H 5700 1300 60  0000 C CNN
-	1    5700 1300
-	0    -1   -1   0   
+P 5800 900
+F 0 "P102" H 5800 1150 40  0000 C CNN
+F 1 "TST" H 5800 850 30  0000 C CNN
+F 2 "" H 5800 900 60  0000 C CNN
+F 3 "" H 5800 900 60  0000 C CNN
+	1    5800 900 
+	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR017
@@ -450,13 +450,13 @@ $EndComp
 $Comp
 L TST P103
 U 1 1 514CFD02
-P 6100 1350
-F 0 "P103" H 6100 1600 40  0000 C CNN
-F 1 "TST" H 6100 1300 30  0000 C CNN
-F 2 "" H 6100 1350 60  0000 C CNN
-F 3 "" H 6100 1350 60  0000 C CNN
-	1    6100 1350
-	0    -1   -1   0   
+P 6250 950
+F 0 "P103" H 6250 1200 40  0000 C CNN
+F 1 "TST" H 6250 900 30  0000 C CNN
+F 2 "" H 6250 950 60  0000 C CNN
+F 3 "" H 6250 950 60  0000 C CNN
+	1    6250 950 
+	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR018
@@ -494,13 +494,13 @@ $EndComp
 $Comp
 L TST P104
 U 1 1 514CFD44
-P 6500 1400
-F 0 "P104" H 6500 1650 40  0000 C CNN
-F 1 "TST" H 6500 1350 30  0000 C CNN
-F 2 "" H 6500 1400 60  0000 C CNN
-F 3 "" H 6500 1400 60  0000 C CNN
-	1    6500 1400
-	0    -1   -1   0   
+P 6650 1000
+F 0 "P104" H 6650 1250 40  0000 C CNN
+F 1 "TST" H 6650 950 30  0000 C CNN
+F 2 "" H 6650 1000 60  0000 C CNN
+F 3 "" H 6650 1000 60  0000 C CNN
+	1    6650 1000
+	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR019
@@ -592,23 +592,17 @@ Wire Wire Line
 Wire Wire Line
 	7050 4300 7050 4250
 Wire Wire Line
-	6750 2600 6750 1000
+	6750 1000 6750 2600
 Wire Wire Line
-	6500 2600 6750 2600
-Wire Wire Line
-	6750 1000 6500 1000
+	6750 2600 6500 2600
 Wire Wire Line
 	6500 2700 6800 2700
 Wire Wire Line
 	6800 2700 6800 950 
 Wire Wire Line
-	6800 950  6100 950 
-Wire Wire Line
 	6500 2800 6850 2800
 Wire Wire Line
 	6850 2800 6850 900 
-Wire Wire Line
-	6850 900  5700 900 
 Wire Wire Line
 	7850 6500 7950 6500
 Wire Wire Line
@@ -639,8 +633,6 @@ Wire Wire Line
 	8850 5950 9050 5950
 Wire Wire Line
 	9050 5950 9050 5400
-Wire Wire Line
-	9050 5400 6500 5400
 Wire Wire Line
 	6500 5450 9000 5450
 Wire Wire Line
@@ -695,14 +687,13 @@ Wire Wire Line
 	7400 1950 7400 4050
 Wire Wire Line
 	7400 4050 6500 4050
-NoConn ~ 6500 2400
 NoConn ~ 6500 3000
 NoConn ~ 6500 4250
 NoConn ~ 6500 4350
 NoConn ~ 6500 4450
 NoConn ~ 6500 4550
 NoConn ~ 6500 5200
-NoConn ~ 6500 5300
+NoConn ~ 6500 5400
 NoConn ~ 6500 5000
 Wire Wire Line
 	6500 3100 6500 3150
@@ -853,4 +844,49 @@ Wire Wire Line
 Wire Wire Line
 	1700 2950 2900 2950
 Connection ~ 2550 2950
+Wire Wire Line
+	6500 2400 6500 2000
+Wire Wire Line
+	6500 2000 4850 2000
+Wire Wire Line
+	4850 2000 4850 1850
+$Comp
+L R R104
+U 1 1 51526037
+P 4850 1600
+F 0 "R104" V 4930 1600 50  0000 C CNN
+F 1 "10k" V 4850 1600 50  0000 C CNN
+F 2 "" H 4850 1600 60  0000 C CNN
+F 3 "" H 4850 1600 60  0000 C CNN
+	1    4850 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR020
+U 1 1 51526125
+P 4850 1350
+F 0 "#PWR020" H 4850 1310 30  0001 C CNN
+F 1 "+3.3V" H 4850 1460 30  0000 C CNN
+F 2 "" H 4850 1350 60  0000 C CNN
+F 3 "" H 4850 1350 60  0000 C CNN
+	1    4850 1350
+	1    0    0    -1  
+$EndComp
+Text Notes 5150 1200 2    60   ~ 0
+Disable FW update\n
+Wire Wire Line
+	6850 900  5700 900 
+Connection ~ 5800 900 
+Wire Wire Line
+	6800 950  6100 950 
+Connection ~ 6250 950 
+Wire Wire Line
+	6500 1000 6750 1000
+Connection ~ 6650 1000
+Wire Wire Line
+	6500 5300 6550 5300
+Wire Wire Line
+	6550 5300 6550 5400
+Wire Wire Line
+	6550 5400 9050 5400
 $EndSCHEMATC

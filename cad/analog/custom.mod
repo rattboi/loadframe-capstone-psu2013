@@ -1,14 +1,37 @@
-PCBNEW-LibModule-V1  Mon 25 Mar 2013 05:27:51 PM PDT
+PCBNEW-LibModule-V1  Thu 28 Mar 2013 12:32:50 PM PDT
 # encoding utf-8
 Units mm
 $INDEX
+1pin_mech
 39-29-9242
 HC-49-US
+OSTTA030161
 SOT23-8
 TE-1-1634612-0
 TO220_VERT_FIX
 lqfp48
+shrouded_5x2
+shrouded_8x2
 $EndINDEX
+$MODULE 1pin_mech
+Po 0 0 0 15 51549AE0 00000000 ~~
+Li 1pin_mech
+Cd module 1 pin (ou trou mecanique de percage)
+Kw DEV
+Sc 0
+AR 1pin_mech
+Op 0 0 0
+T0 0 -1200 400 400 0 100 N V 21 N "1PIN"
+T1 0 1100 400 400 0 100 N I 21 N "P***"
+DC 0 0 0 0 0.15 21
+$PAD
+Sh "1" C 4.064 4.064 0 0 0
+Dr 3.2512 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 0 0
+$EndPAD
+$EndMODULE 1pin_mech
 $MODULE 39-29-9242
 Po 0 0 0 15 5150DE8C 00000000 ~~
 Li 39-29-9242
@@ -233,6 +256,47 @@ Ne 0 ""
 Po 4.75 0
 $EndPAD
 $EndMODULE HC-49-US
+$MODULE OSTTA030161
+Po 0 0 0 15 51547DD8 00000000 ~~
+Li OSTTA030161
+Sc 0
+AR 
+Op 0 0 0
+T0 0 -3.5 1 1 0 0.15 N V 21 N "OSTTA030161"
+T1 -9 0.4 1 1 900 0.15 N V 21 N "VAL**"
+DA 5 4.5 5 3.5 900 0.15 21
+DA 5 4.5 4 4.5 900 0.15 21
+DA 0 4.5 0 3.5 900 0.15 21
+DA 0 4.5 -1 4.5 900 0.15 21
+DA -4.5 4.5 -4.5 3.5 900 0.15 21
+DA -4.5 4.5 -5.5 4.5 900 0.15 21
+DS -7.5 -4.5 -7.5 4.5 0.15 21
+DS 7.5 4.5 -8.1 4.5 0.15 21
+DS -8.1 4.5 -8.1 -4.5 0.15 21
+DS -8.1 -4.5 7.5 -4.5 0.15 21
+DS 7.5 -4.5 7.5 4.5 0.15 21
+$PAD
+Sh "1" C 1.9 1.9 0 0 0
+Dr 1.3 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -5 0
+$EndPAD
+$PAD
+Sh "2" C 1.9 1.9 0 0 0
+Dr 1.3 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 0 0
+$EndPAD
+$PAD
+Sh "3" C 1.9 1.9 0 0 0
+Dr 1.3 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 5 0
+$EndPAD
+$EndMODULE OSTTA030161
 $MODULE SOT23-8
 Po 0 0 0 15 5150E97D 00000000 ~~
 Li SOT23-8
@@ -739,4 +803,234 @@ Ne 0 ""
 Po -4.09956 2.75082
 $EndPAD
 $EndMODULE lqfp48
+$MODULE shrouded_5x2
+Po 0 0 0 15 51534B85 00000000 ~~
+Li shrouded_5x2
+Cd Double rangee de contacts 2 x 5 pins
+Kw CONN
+Sc 0
+AR /514CB47E
+Op 0 0 0
+T0 0 -3 1.016 1.016 0 0.2032 N V 21 N "5x2"
+T1 4.5 3.5 1.016 1.016 0 0.2032 N I 21 N "U***"
+DS -2 4.5 -2 3.5 0.15 21
+DS -2 3.5 1.5 3.5 0.15 21
+DS 1.5 3.5 1.5 4.5 0.15 21
+DS -10.1 -4.55 10.1 -4.55 0.3048 21
+DS 10.1 -4.55 10.1 4.55 0.3048 21
+DS 10.1 4.55 -10.1 4.55 0.3048 21
+DS -10.1 4.55 -10.1 -4.55 0.3048 21
+$PAD
+Sh "1" R 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -5.08 1.27
+$EndPAD
+$PAD
+Sh "2" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -5.08 -1.27
+$EndPAD
+$PAD
+Sh "3" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -2.54 1.27
+$EndPAD
+$PAD
+Sh "4" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -2.54 -1.27
+$EndPAD
+$PAD
+Sh "5" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 0 1.27
+$EndPAD
+$PAD
+Sh "6" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 0 -1.27
+$EndPAD
+$PAD
+Sh "7" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 2.54 1.27
+$EndPAD
+$PAD
+Sh "8" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 2.54 -1.27
+$EndPAD
+$PAD
+Sh "9" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 5.08 1.27
+$EndPAD
+$PAD
+Sh "10" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 5.08 -1.27
+$EndPAD
+$SHAPE3D
+Na "pin_array/pins_array_5x2.wrl"
+Sc 1 1 1
+Of 0 0 0
+Ro 0 0 0
+$EndSHAPE3D
+$EndMODULE shrouded_5x2
+$MODULE shrouded_8x2
+Po 0 0 0 15 515349FA 00000000 ~~
+Li shrouded_8x2
+Cd Double rangee de contacts 2 x 8 pins
+Kw CONN
+Sc 0
+AR /514D0E4D/514E1455
+Op 0 0 0
+T0 0 -3.5 1.016 1.016 0 0.2032 N V 21 N "8x2"
+T1 4.5 3.5 1.016 1.016 0 0.2032 N V 21 N "U***"
+DS -1.5 4.5 -1.5 3.5 0.15 21
+DS -1.5 3.5 1.5 3.5 0.15 21
+DS 1.5 3.5 1.5 4.5 0.15 21
+DS -13.91 4.55 -13.91 -4.55 0.3048 21
+DS -13.91 -4.55 13.91 -4.55 0.3048 21
+DS 13.91 -4.55 13.91 4.55 0.3048 21
+DS 13.91 4.55 -13.91 4.55 0.3048 21
+$PAD
+Sh "1" R 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -8.89 1.27
+$EndPAD
+$PAD
+Sh "2" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -8.89 -1.27
+$EndPAD
+$PAD
+Sh "3" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -6.35 1.27
+$EndPAD
+$PAD
+Sh "4" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -6.35 -1.27
+$EndPAD
+$PAD
+Sh "5" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -3.81 1.27
+$EndPAD
+$PAD
+Sh "6" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -3.81 -1.27
+$EndPAD
+$PAD
+Sh "7" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -1.27 1.27
+$EndPAD
+$PAD
+Sh "8" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po -1.27 -1.27
+$EndPAD
+$PAD
+Sh "9" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 1.27 1.27
+$EndPAD
+$PAD
+Sh "10" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 1.27 -1.27
+$EndPAD
+$PAD
+Sh "11" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 3.81 1.27
+$EndPAD
+$PAD
+Sh "12" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 3.81 -1.27
+$EndPAD
+$PAD
+Sh "13" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 6.35 1.27
+$EndPAD
+$PAD
+Sh "14" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 6.35 -1.27
+$EndPAD
+$PAD
+Sh "15" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 8.89 1.27
+$EndPAD
+$PAD
+Sh "16" C 1.524 1.524 0 0 0
+Dr 1.016 0 0
+At STD N 00E0FFFF
+Ne 0 ""
+Po 8.89 -1.27
+$EndPAD
+$SHAPE3D
+Na "pin_array/pins_array_8x2.wrl"
+Sc 1 1 1
+Of 0 0 0
+Ro 0 0 0
+$EndSHAPE3D
+$EndMODULE shrouded_8x2
 $EndLIBRARY
