@@ -1,4 +1,4 @@
-update=Thu 28 Mar 2013 04:27:42 PM PDT
+update=Thu 28 Mar 2013 04:49:19 PM PDT
 version=1
 last_client=pcbnew
 [general]
@@ -75,9 +75,9 @@ EquName1=devcms
 version=1
 LastNetListRead=
 UseCmpFile=1
-PadDrill=0
-PadSizeH=2.01
-PadSizeV=2.01
+PadDrill=3.2512
+PadSizeH=4.064
+PadSizeV=4.064
 PcbTextSizeV=1
 PcbTextSizeH=1
 PcbTextThickness=0.3
@@ -103,3 +103,5 @@ LibName9=dip_sockets
 LibName10=pga_sockets
 LibName11=valves
 LibName12=custom
+LibName13=outside
+LibName14=center
