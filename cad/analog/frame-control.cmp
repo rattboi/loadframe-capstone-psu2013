@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Mon 08 Apr 2013 04:28:07 PM PDT
+Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Wed 10 Apr 2013 01:20:44 PM PDT
 
 BeginCmp
 TimeStamp = /514CB0FE;
@@ -143,6 +143,20 @@ EndCmp
 BeginCmp
 TimeStamp = /512FFF69/5150EDC0;
 Reference = FB301;
+ValeurCmp = FILTER;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /512FFF69/5165CF6F;
+Reference = FB302;
+ValeurCmp = FILTER;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /512FFF69/5165CF8B;
+Reference = FB303;
 ValeurCmp = FILTER;
 IdModule  = SM0805;
 EndCmp
