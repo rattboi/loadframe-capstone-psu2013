@@ -1,4 +1,4 @@
-update=Thu 28 Mar 2013 04:49:19 PM PDT
+update=Tue 09 Apr 2013 02:01:09 PM PDT
 version=1
 last_client=pcbnew
 [general]
@@ -105,3 +105,5 @@ LibName11=valves
 LibName12=custom
 LibName13=outside
 LibName14=center
+LibName15=LOGO_SILK
+LibName16=LOGO_MASK

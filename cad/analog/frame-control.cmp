@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Fri 05 Apr 2013 01:05:02 PM PDT
+Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Mon 08 Apr 2013 04:28:07 PM PDT
 
 BeginCmp
 TimeStamp = /514CB0FE;
@@ -145,13 +145,6 @@ TimeStamp = /512FFF69/5150EDC0;
 Reference = FB301;
 ValeurCmp = FILTER;
 IdModule  = SM0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /514CDF8C;
-Reference = K101;
-ValeurCmp = LCD;
-IdModule  = PIN_ARRAY_3X1;
 EndCmp
 
 BeginCmp
