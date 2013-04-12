@@ -1,11 +1,6 @@
-update=Thu Mar  7 20:05:17 2013
+update=Thu 11 Apr 2013 11:19:06 PM PDT
 version=1
-last_client=eeschema
-[cvpcb]
-version=1
-NetIExt=net
-[cvpcb/libraries]
-EquName1=devcms
+last_client=cvpcb
 [pcbnew]
 version=1
 PadDrlX=320
@@ -24,7 +19,6 @@ TxtLar=120
 MSegLar=150
 LastNetListRead=
 [pcbnew/libraries]
-LibDir=
 LibName1=sockets
 LibName2=connect
 LibName3=discret
@@ -36,6 +30,8 @@ LibName8=led
 LibName9=dip_sockets
 LibName10=pga_sockets
 LibName11=valves
+LibName12=custom
+LibDir=/home/rattboi/loadframe-capstone-psu2013/cad/display
 [general]
 version=1
 [eeschema]
@@ -101,3 +97,8 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=custom
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms

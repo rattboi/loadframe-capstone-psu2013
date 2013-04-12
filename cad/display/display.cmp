@@ -1,0 +1,171 @@
+Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Fri 12 Apr 2013 12:09:04 AM PDT
+
+BeginCmp
+TimeStamp = /5139751B;
+Reference = C101;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51397519;
+Reference = C102;
+ValeurCmp = 1uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51397442;
+Reference = C103;
+ValeurCmp = 100nF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /513974D0;
+Reference = C104;
+ValeurCmp = 1uF;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /513971AB;
+Reference = P101;
+ValeurCmp = CONN_5X2;
+IdModule  = shrouded_5x2;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C37;
+Reference = Q101;
+ValeurCmp = MOS_P;
+IdModule  = SOT23;
+EndCmp
+
+BeginCmp
+TimeStamp = /513967D9;
+Reference = Q102;
+ValeurCmp = MOS_P;
+IdModule  = SOT23;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C1B;
+Reference = Q103;
+ValeurCmp = MOS_P;
+IdModule  = SOT23;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C2F;
+Reference = Q104;
+ValeurCmp = MOS_P;
+IdModule  = SOT23;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C28;
+Reference = Q105;
+ValeurCmp = MOS_P;
+IdModule  = SOT23;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C35;
+Reference = R101;
+ValeurCmp = 10K;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396882;
+Reference = R102;
+ValeurCmp = 10K;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C19;
+Reference = R103;
+ValeurCmp = 10K;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C2D;
+Reference = R104;
+ValeurCmp = 10K;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C2A;
+Reference = R105;
+ValeurCmp = 10K;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51397111;
+Reference = R106;
+ValeurCmp = 750;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396427;
+Reference = U101;
+ValeurCmp = CD74HC4017E;
+IdModule  = DIP-16__300;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C38;
+Reference = U102;
+ValeurCmp = 74HC04;
+IdModule  = DIP-14__300;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C39;
+Reference = U103;
+ValeurCmp = LDS-A812RI;
+IdModule  = LDS-A812RI;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396445;
+Reference = U104;
+ValeurCmp = LDS-A812RI;
+IdModule  = LDS-A812RI;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C1D;
+Reference = U105;
+ValeurCmp = LDS-A812RI;
+IdModule  = LDS-A812RI;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C31;
+Reference = U106;
+ValeurCmp = LDS-A812RI;
+IdModule  = LDS-A812RI;
+EndCmp
+
+BeginCmp
+TimeStamp = /51396C26;
+Reference = U107;
+ValeurCmp = LDS-A812RI;
+IdModule  = LDS-A812RI;
+EndCmp
+
+BeginCmp
+TimeStamp = /513963BB;
+Reference = U108;
+ValeurCmp = TLC5916;
+IdModule  = DIP-16__300;
+EndCmp
+
+EndListe
