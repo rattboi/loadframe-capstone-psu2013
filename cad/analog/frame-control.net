@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/agoetz/loadframe-capstone-psu2013/cad/analog/frame-control.sch)
-    (date "Wed 10 Apr 2013 01:20:31 PM PDT")
+    (date "Fri 12 Apr 2013 07:26:42 PM PDT")
     (tool "eeschema (2013-feb-26)-stable"))
   (components
     (comp (ref U101)
@@ -234,7 +234,7 @@
       (sheetpath (names "/Analog Frontend/") (tstamps /512FFF69/))
       (tstamp 51300C2A))
     (comp (ref R301)
-      (value 500)
+      (value 470)
       (libsource (lib device) (part R))
       (sheetpath (names "/Analog Frontend/") (tstamps /512FFF69/))
       (tstamp 51300720))

@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed 10 Apr 2013 01:20:32 PM PDT
+EESchema Schematic File Version 2  date Fri 12 Apr 2013 07:46:19 PM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 4
 Title ""
-Date "10 apr 2013"
+Date "13 apr 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -275,7 +275,7 @@ L R R301
 U 1 1 51300720
 P 4600 3500
 F 0 "R301" V 4680 3500 50  0000 C CNN
-F 1 "500" V 4600 3500 50  0000 C CNN
+F 1 "470" V 4600 3500 50  0000 C CNN
 F 2 "" H 4600 3500 60  0001 C CNN
 F 3 "" H 4600 3500 60  0001 C CNN
 	1    4600 3500
@@ -536,7 +536,7 @@ L R R311
 U 1 1 512E6E26
 P 7450 3250
 F 0 "R311" V 7530 3250 50  0000 C CNN
-F 1 "17k" V 7450 3250 50  0000 C CNN
+F 1 "16.9k" V 7450 3250 50  0000 C CNN
 F 2 "" H 7450 3250 60  0001 C CNN
 F 3 "" H 7450 3250 60  0001 C CNN
 	1    7450 3250
