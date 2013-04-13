@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Fri 12 Apr 2013 12:09:04 AM PDT
+Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Fri 12 Apr 2013 01:18:57 PM PDT
 
 BeginCmp
 TimeStamp = /5139751B;
@@ -36,38 +36,38 @@ IdModule  = shrouded_5x2;
 EndCmp
 
 BeginCmp
-TimeStamp = /51396C37;
-Reference = Q101;
-ValeurCmp = MOS_P;
-IdModule  = SOT23;
+TimeStamp = /51686C73;
+Reference = Q1;
+ValeurCmp = 2N5461;
+IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /513967D9;
-Reference = Q102;
-ValeurCmp = MOS_P;
-IdModule  = SOT23;
+TimeStamp = /51686BE8;
+Reference = Q2;
+ValeurCmp = 2N5461;
+IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51396C1B;
-Reference = Q103;
-ValeurCmp = MOS_P;
-IdModule  = SOT23;
+TimeStamp = /51686C79;
+Reference = Q3;
+ValeurCmp = 2N5461;
+IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51396C2F;
-Reference = Q104;
-ValeurCmp = MOS_P;
-IdModule  = SOT23;
+TimeStamp = /51686C7F;
+Reference = Q4;
+ValeurCmp = 2N5461;
+IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51396C28;
-Reference = Q105;
-ValeurCmp = MOS_P;
-IdModule  = SOT23;
+TimeStamp = /51686C8B;
+Reference = Q5;
+ValeurCmp = 2N5461;
+IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
