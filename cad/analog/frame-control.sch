@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri 12 Apr 2013 07:46:19 PM PDT
+EESchema Schematic File Version 2  date Sun 14 Apr 2013 12:46:54 AM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ $Descr User 11000 8500
 encoding utf-8
 Sheet 1 4
 Title ""
-Date "13 apr 2013"
+Date "14 apr 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -637,11 +637,10 @@ Wire Wire Line
 	7400 4050 6500 4050
 NoConn ~ 6500 3000
 NoConn ~ 6500 4250
-NoConn ~ 6500 4450
 NoConn ~ 6500 4550
 NoConn ~ 6500 5200
 NoConn ~ 6500 5400
-NoConn ~ 6500 5000
+NoConn ~ 6500 4450
 Wire Wire Line
 	6500 3100 6500 3150
 Wire Wire Line
@@ -705,11 +704,7 @@ Wire Wire Line
 Wire Wire Line
 	7950 4450 7950 4950
 Wire Wire Line
-	7950 4950 6550 4950
-Wire Wire Line
-	6550 4950 6550 5100
-Wire Wire Line
-	6550 5100 6500 5100
+	6500 5100 6700 5100
 Wire Wire Line
 	7050 6500 7000 6500
 Wire Wire Line
@@ -847,7 +842,7 @@ Wire Wire Line
 Wire Wire Line
 	6550 4150 6550 4350
 $Sheet
-S 7700 1250 950  1000
+S 7700 1250 950  1100
 U 514D0E4D
 F0 "InterfaceButtons" 50
 F1 "Interface.sch" 50
@@ -860,7 +855,22 @@ F7 "TareLVDT" I L 7700 1850 60
 F8 "TareLOADC" I L 7700 1950 60 
 F9 "Aux1" I L 7700 2150 60 
 F10 "LCDTX" I L 7700 2050 60 
+F11 "Aux2" I L 7700 2250 60 
 $EndSheet
 Wire Wire Line
 	6550 4350 6500 4350
+Wire Wire Line
+	7700 2250 7550 2250
+Wire Wire Line
+	7550 2250 7550 4200
+Wire Wire Line
+	7550 4200 6600 4200
+Wire Wire Line
+	6600 5000 6600 4200
+Wire Wire Line
+	7950 4950 6700 4950
+Wire Wire Line
+	6700 4950 6700 5100
+Wire Wire Line
+	6500 5000 6600 5000
 $EndSCHEMATC
