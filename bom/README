@@ -2,4 +2,4 @@ This file contains CSV files suitable for use with digikey.
 
 + frame-control.bom Contains the BOM for the main control panel
 + panel.bom Contains BOM for frontpanel
-
++ display.bom Contains BOM for display daughterboard
