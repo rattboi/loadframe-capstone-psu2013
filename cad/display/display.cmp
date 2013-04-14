@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Fri 12 Apr 2013 01:18:57 PM PDT
+Cmp-Mod V01 Created by CvPcb (2013-feb-26)-stable date = Sat 13 Apr 2013 09:40:40 PM PDT
 
 BeginCmp
 TimeStamp = /5139751B;
@@ -36,37 +36,37 @@ IdModule  = shrouded_5x2;
 EndCmp
 
 BeginCmp
-TimeStamp = /51686C73;
+TimeStamp = /516A3333;
 Reference = Q1;
-ValeurCmp = 2N5461;
+ValeurCmp = ZVP3306A;
 IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51686BE8;
+TimeStamp = /516A3340;
 Reference = Q2;
-ValeurCmp = 2N5461;
+ValeurCmp = ZVP3306A;
 IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51686C79;
+TimeStamp = /516A3346;
 Reference = Q3;
-ValeurCmp = 2N5461;
+ValeurCmp = ZVP3306A;
 IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51686C7F;
+TimeStamp = /516A334C;
 Reference = Q4;
-ValeurCmp = 2N5461;
+ValeurCmp = ZVP3306A;
 IdModule  = TO92-123;
 EndCmp
 
 BeginCmp
-TimeStamp = /51686C8B;
+TimeStamp = /516A3352;
 Reference = Q5;
-ValeurCmp = 2N5461;
+ValeurCmp = ZVP3306A;
 IdModule  = TO92-123;
 EndCmp
 
