@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri 12 Apr 2013 07:46:19 PM PDT
+EESchema Schematic File Version 2  date Sun 14 Apr 2013 12:46:54 AM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 4
 Title ""
-Date "13 apr 2013"
+Date "14 apr 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -224,7 +224,6 @@ F 3 "" H 7250 4300 60  0000 C CNN
 	1    7250 4300
 	0    -1   -1   0   
 $EndComp
-NoConn ~ 7150 4400
 $Comp
 L R R402
 U 1 1 514E1A01
@@ -400,4 +399,12 @@ F 3 "" H 4700 3400 60  0000 C CNN
 	1    4700 3400
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	7150 4400 7400 4400
+Wire Wire Line
+	7400 4400 7400 4900
+Wire Wire Line
+	7400 4900 4600 4900
+Text HLabel 4600 4900 0    60   Input ~ 0
+Aux2
 $EndSCHEMATC
