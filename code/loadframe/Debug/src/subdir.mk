@@ -5,15 +5,24 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/cr_startup_lpc11.c \
-../src/main.c 
+../src/dac.c \
+../src/gpio.c \
+../src/main.c \
+../src/ssp.c 
 
 OBJS += \
 ./src/cr_startup_lpc11.o \
-./src/main.o 
+./src/dac.o \
+./src/gpio.o \
+./src/main.o \
+./src/ssp.o 
 
 C_DEPS += \
 ./src/cr_startup_lpc11.d \
-./src/main.d 
+./src/dac.d \
+./src/gpio.d \
+./src/main.d \
+./src/ssp.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

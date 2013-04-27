@@ -12,9 +12,48 @@ Discarded input sections
  .text          0x00000000        0x0 ./src/cr_startup_lpc11.o
  .data          0x00000000        0x0 ./src/cr_startup_lpc11.o
  .bss           0x00000000        0x0 ./src/cr_startup_lpc11.o
+ .text          0x00000000        0x0 ./src/dac.o
+ .data          0x00000000        0x0 ./src/dac.o
+ .bss           0x00000000        0x0 ./src/dac.o
+ .text.dac_init
+                0x00000000       0x18 ./src/dac.o
+ .text.dac_send
+                0x00000000       0x4c ./src/dac.o
+ .text          0x00000000        0x0 ./src/gpio.o
+ .data          0x00000000        0x0 ./src/gpio.o
+ .bss           0x00000000        0x0 ./src/gpio.o
+ .text.GPIOSetInterrupt
+                0x00000000      0x334 ./src/gpio.o
+ .text.GPIOIntEnable
+                0x00000000       0xa8 ./src/gpio.o
+ .text.GPIOIntDisable
+                0x00000000       0xa8 ./src/gpio.o
+ .text.GPIOIntStatus
+                0x00000000       0xbc ./src/gpio.o
+ .text.GPIOIntClear
+                0x00000000       0xa8 ./src/gpio.o
  .text          0x00000000        0x0 ./src/main.o
  .data          0x00000000        0x0 ./src/main.o
  .bss           0x00000000        0x0 ./src/main.o
+ .rodata.LPC_GPIO
+                0x00000000       0x10 ./src/main.o
+ .text          0x00000000        0x0 ./src/ssp.o
+ .data          0x00000000        0x0 ./src/ssp.o
+ .bss           0x00000000        0x0 ./src/ssp.o
+ .text.NVIC_EnableIRQ
+                0x00000000       0x2c ./src/ssp.o
+ .rodata.LPC_GPIO
+                0x00000000       0x10 ./src/ssp.o
+ .text.SSP_IOConfig
+                0x00000000      0x144 ./src/ssp.o
+ .text.SSP_Init
+                0x00000000       0xcc ./src/ssp.o
+ .text.SSP_Send8
+                0x00000000       0xc0 ./src/ssp.o
+ .text.SSP_Send
+                0x00000000       0xc0 ./src/ssp.o
+ .text.SSP_Receive
+                0x00000000       0x8c ./src/ssp.o
  .text          0x00000000        0x0 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
  .data          0x00000000        0x0 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
  .bss           0x00000000        0x0 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
@@ -55,7 +94,10 @@ RamLoc8          0x10000000         0x00002000         xrw
 Linker script and memory map
 
 LOAD ./src/cr_startup_lpc11.o
+LOAD ./src/dac.o
+LOAD ./src/gpio.o
 LOAD ./src/main.o
+LOAD ./src/ssp.o
 LOAD /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a
 START GROUP
 LOAD /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/../../../../arm-none-eabi/lib/armv6-m/libcr_c.a
@@ -64,7 +106,7 @@ END GROUP
                 0x00008000                __top_MFlash32 = 0x8000
                 0x10002000                __top_RamLoc8 = 0x10002000
 
-.text           0x00000000      0x398
+.text           0x00000000      0x588
  FILL mask 0xff
  *(.isr_vector)
  .isr_vector    0x00000000       0xc0 ./src/cr_startup_lpc11.o
@@ -72,13 +114,13 @@ END GROUP
                 0x000000c0                . = ALIGN (0x4)
                 0x000000c0                __section_table_start = .
                 0x000000c0                __data_section_table = .
-                0x000000c0        0x4 LONG 0x398 LOADADDR (.data)
+                0x000000c0        0x4 LONG 0x588 LOADADDR (.data)
                 0x000000c4        0x4 LONG 0x10000000 ADDR (.data)
                 0x000000c8        0x4 LONG 0x0 SIZEOF (.data)
                 0x000000cc                __data_section_table_end = .
                 0x000000cc                __bss_section_table = .
                 0x000000cc        0x4 LONG 0x10000000 ADDR (.bss)
-                0x000000d0        0x4 LONG 0x4 SIZEOF (.bss)
+                0x000000d0        0x4 LONG 0x1c SIZEOF (.bss)
                 0x000000d4                __bss_section_table_end = .
                 0x000000d4                __section_table_end = .
  *(.after_vectors*)
@@ -99,10 +141,8 @@ END GROUP
                 0x0000014c                IntDefaultHandler
                 0x0000014c                PIOINT1_IRQHandler
                 0x0000014c                CAN_IRQHandler
-                0x0000014c                SSP0_IRQHandler
                 0x0000014c                TIMER16_1_IRQHandler
                 0x0000014c                ADC_IRQHandler
-                0x0000014c                SSP1_IRQHandler
                 0x0000014c                PIOINT2_IRQHandler
                 0x0000014c                BOD_IRQHandler
                 0x0000014c                WAKEUP_IRQHandler
@@ -119,38 +159,55 @@ END GROUP
                 0x00000300                PROVIDE (__CRP_WORD_END__, .)
                 0x00000001                ASSERT (! ((__CRP_WORD_START__ == __CRP_WORD_END__)), Linker CRP Enabled, but no CRP_WORD provided within application)
  *(.text*)
- .text.main     0x00000300       0x14 ./src/main.o
-                0x00000300                main
+ .text.GPIOInit
+                0x00000300       0x1c ./src/gpio.o
+                0x00000300                GPIOInit
+ .text.GPIOSetValue
+                0x0000031c       0x38 ./src/gpio.o
+                0x0000031c                GPIOSetValue
+ .text.GPIOSetDir
+                0x00000354       0x74 ./src/gpio.o
+                0x00000354                GPIOSetDir
+ .text.main     0x000003c8       0x54 ./src/main.o
+                0x000003c8                main
+ .text.SSP0_IRQHandler
+                0x0000041c       0x6c ./src/ssp.o
+                0x0000041c                SSP0_IRQHandler
+ .text.SSP1_IRQHandler
+                0x00000488       0x6c ./src/ssp.o
+                0x00000488                SSP1_IRQHandler
  .text.SystemInit
-                0x00000314       0x7c /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
-                0x00000314                SystemInit
+                0x000004f4       0x7c /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+                0x000004f4                SystemInit
  .text.__weak_main
-                0x00000390        0x8 /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/../../../../arm-none-eabi/lib/armv6-m/libcr_c.a(__weak__main.o)
-                0x00000390                __main
-                0x00000390                __weak_main
+                0x00000570        0x8 /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/../../../../arm-none-eabi/lib/armv6-m/libcr_c.a(__weak__main.o)
+                0x00000570                __main
+                0x00000570                __weak_main
  *(.rodata .rodata.*)
-                0x00000398                . = ALIGN (0x4)
+ .rodata.LPC_GPIO
+                0x00000578       0x10 ./src/gpio.o
+                0x00000588                . = ALIGN (0x4)
 
-.glue_7         0x00000398        0x0
+.glue_7         0x00000588        0x0
  .glue_7        0x00000000        0x0 linker stubs
 
-.glue_7t        0x00000398        0x0
+.glue_7t        0x00000588        0x0
  .glue_7t       0x00000000        0x0 linker stubs
 
-.vfp11_veneer   0x00000398        0x0
+.vfp11_veneer   0x00000588        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x00000398        0x0
+.v4_bx          0x00000588        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x00000398                __exidx_start = .
+                0x00000588                __exidx_start = .
 
 .ARM.exidx
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-                0x00000398                __exidx_end = .
-                0x00000398                _etext = .
+                0x00000588                __exidx_end = .
+                0x00000588                _etext = .
 
 .uninit_RESERVED
                 0x10000000        0x0
@@ -158,7 +215,7 @@ END GROUP
                 0x10000000                . = ALIGN (0x4)
                 0x10000000                _end_uninit_RESERVED = .
 
-.data           0x10000000        0x0 load address 0x00000398
+.data           0x10000000        0x0 load address 0x00000588
  FILL mask 0xff
                 0x10000000                _data = .
  *(vtable)
@@ -166,89 +223,155 @@ END GROUP
                 0x10000000                . = ALIGN (0x4)
                 0x10000000                _edata = .
 
-.bss            0x10000000        0x4 load address 0x00000398
+.bss            0x10000000       0x1c load address 0x00000588
                 0x10000000                _bss = .
  *(.bss*)
- .bss.i.1511    0x10000000        0x4 ./src/main.o
+ .bss.i.1548    0x10000000        0x4 ./src/main.o
+ .bss.interruptRxStat0
+                0x10000004        0x4 ./src/ssp.o
+                0x10000004                interruptRxStat0
+ .bss.interruptOverRunStat0
+                0x10000008        0x4 ./src/ssp.o
+                0x10000008                interruptOverRunStat0
+ .bss.interruptRxTimeoutStat0
+                0x1000000c        0x4 ./src/ssp.o
+                0x1000000c                interruptRxTimeoutStat0
+ .bss.interruptRxStat1
+                0x10000010        0x4 ./src/ssp.o
+                0x10000010                interruptRxStat1
+ .bss.interruptOverRunStat1
+                0x10000014        0x4 ./src/ssp.o
+                0x10000014                interruptOverRunStat1
+ .bss.interruptRxTimeoutStat1
+                0x10000018        0x4 ./src/ssp.o
+                0x10000018                interruptRxTimeoutStat1
  *(COMMON)
-                0x10000004                . = ALIGN (0x4)
-                0x10000004                _ebss = .
-                0x10000004                PROVIDE (end, .)
-                0x10000004                PROVIDE (_pvHeapStart, .)
+                0x1000001c                . = ALIGN (0x4)
+                0x1000001c                _ebss = .
+                0x1000001c                PROVIDE (end, .)
+                0x1000001c                PROVIDE (_pvHeapStart, .)
                 0x10002000                PROVIDE (_vStackTop, (__top_RamLoc8 - 0x0))
 OUTPUT(loadframe.axf elf32-littlearm)
 
-.debug_abbrev   0x00000000      0x268
+.debug_abbrev   0x00000000      0x71b
  .debug_abbrev  0x00000000      0x107 ./src/cr_startup_lpc11.o
- .debug_abbrev  0x00000107       0x75 ./src/main.o
- .debug_abbrev  0x0000017c       0xec /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .debug_abbrev  0x00000107       0x85 ./src/dac.o
+ .debug_abbrev  0x0000018c      0x192 ./src/gpio.o
+ .debug_abbrev  0x0000031e      0x117 ./src/main.o
+ .debug_abbrev  0x00000435      0x1fa ./src/ssp.o
+ .debug_abbrev  0x0000062f       0xec /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_info     0x00000000      0x83b
+.debug_info     0x00000000     0x1fcd
  .debug_info    0x00000000      0x29a ./src/cr_startup_lpc11.o
- .debug_info    0x0000029a       0xbd ./src/main.o
- .debug_info    0x00000357      0x4e4 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .debug_info    0x0000029a       0xcd ./src/dac.o
+ .debug_info    0x00000367      0x7a0 ./src/gpio.o
+ .debug_info    0x00000b07      0x21b ./src/main.o
+ .debug_info    0x00000d22      0xdc7 ./src/ssp.o
+ .debug_info    0x00001ae9      0x4e4 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_line     0x00000000      0xc28
- .debug_line    0x00000000      0x3e0 ./src/cr_startup_lpc11.o
- .debug_line    0x000003e0      0x457 ./src/main.o
- .debug_line    0x00000837      0x3f1 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+.debug_line     0x00000000     0x1a11
+ .debug_line    0x00000000      0x39c ./src/cr_startup_lpc11.o
+ .debug_line    0x0000039c      0x3f8 ./src/dac.o
+ .debug_line    0x00000794      0x4c9 ./src/gpio.o
+ .debug_line    0x00000c5d      0x47b ./src/main.o
+ .debug_line    0x000010d8      0x548 ./src/ssp.o
+ .debug_line    0x00001620      0x3f1 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_macinfo  0x00000000     0xc5a6
+.debug_macinfo  0x00000000    0x1b2ba
  .debug_macinfo
-                0x00000000     0x30bb ./src/cr_startup_lpc11.o
+                0x00000000     0x32bb ./src/cr_startup_lpc11.o
  .debug_macinfo
-                0x000030bb     0x4a29 ./src/main.o
+                0x000032bb     0x4e5f ./src/dac.o
  .debug_macinfo
-                0x00007ae4     0x4ac2 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+                0x0000811a     0x4ac9 ./src/gpio.o
+ .debug_macinfo
+                0x0000cbe3     0x4db4 ./src/main.o
+ .debug_macinfo
+                0x00011997     0x4e61 ./src/ssp.o
+ .debug_macinfo
+                0x000167f8     0x4ac2 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_loc      0x00000000      0x3e9
+.debug_loc      0x00000000      0x7c1
  .debug_loc     0x00000000      0x2e1 ./src/cr_startup_lpc11.o
- .debug_loc     0x000002e1       0x2c ./src/main.o
- .debug_loc     0x0000030d       0xdc /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .debug_loc     0x000002e1       0x64 ./src/dac.o
+ .debug_loc     0x00000345      0x1b4 ./src/gpio.o
+ .debug_loc     0x000004f9       0x2c ./src/main.o
+ .debug_loc     0x00000525      0x1c0 ./src/ssp.o
+ .debug_loc     0x000006e5       0xdc /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
 .debug_pubnames
-                0x00000000      0x135
+                0x00000000      0x316
  .debug_pubnames
                 0x00000000       0xbe ./src/cr_startup_lpc11.o
  .debug_pubnames
-                0x000000be       0x28 ./src/main.o
+                0x000000be       0x2c ./src/dac.o
  .debug_pubnames
-                0x000000e6       0x4f /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+                0x000000ea       0x9c ./src/gpio.o
+ .debug_pubnames
+                0x00000186       0x28 ./src/main.o
+ .debug_pubnames
+                0x000001ae      0x119 ./src/ssp.o
+ .debug_pubnames
+                0x000002c7       0x4f /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
 .debug_pubtypes
-                0x00000000       0x5a
+                0x00000000      0x199
  .debug_pubtypes
                 0x00000000       0x12 ./src/cr_startup_lpc11.o
  .debug_pubtypes
-                0x00000012       0x12 ./src/main.o
+                0x00000012       0x1f ./src/dac.o
  .debug_pubtypes
-                0x00000024       0x36 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+                0x00000031       0x4b ./src/gpio.o
+ .debug_pubtypes
+                0x0000007c       0x34 ./src/main.o
+ .debug_pubtypes
+                0x000000b0       0xb3 ./src/ssp.o
+ .debug_pubtypes
+                0x00000163       0x36 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_aranges  0x00000000       0xa8
+.debug_aranges  0x00000000      0x180
  .debug_aranges
                 0x00000000       0x60 ./src/cr_startup_lpc11.o
  .debug_aranges
-                0x00000060       0x20 ./src/main.o
+                0x00000060       0x28 ./src/dac.o
  .debug_aranges
-                0x00000080       0x28 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+                0x00000088       0x58 ./src/gpio.o
+ .debug_aranges
+                0x000000e0       0x20 ./src/main.o
+ .debug_aranges
+                0x00000100       0x58 ./src/ssp.o
+ .debug_aranges
+                0x00000158       0x28 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_ranges   0x00000000       0x78
+.debug_ranges   0x00000000      0x120
  .debug_ranges  0x00000000       0x50 ./src/cr_startup_lpc11.o
- .debug_ranges  0x00000050       0x10 ./src/main.o
- .debug_ranges  0x00000060       0x18 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .debug_ranges  0x00000050       0x18 ./src/dac.o
+ .debug_ranges  0x00000068       0x48 ./src/gpio.o
+ .debug_ranges  0x000000b0       0x10 ./src/main.o
+ .debug_ranges  0x000000c0       0x48 ./src/ssp.o
+ .debug_ranges  0x00000108       0x18 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
 
-.debug_str      0x00000000      0x4e7
+.debug_str      0x00000000      0xa91
  .debug_str     0x00000000      0x1ce ./src/cr_startup_lpc11.o
                                 0x1f6 (size before relaxing)
- .debug_str     0x000001ce       0x1c ./src/main.o
-                                 0xde (size before relaxing)
- .debug_str     0x000001ea      0x2fd /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .debug_str     0x000001ce       0x33 ./src/dac.o
+                                 0xf5 (size before relaxing)
+ .debug_str     0x00000201      0x336 ./src/gpio.o
+                                0x3f8 (size before relaxing)
+ .debug_str     0x00000537       0x1c ./src/main.o
+                                0x128 (size before relaxing)
+ .debug_str     0x00000553      0x4a1 ./src/ssp.o
+                                0x806 (size before relaxing)
+ .debug_str     0x000009f4       0x9d /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
                                 0x382 (size before relaxing)
 
 .comment        0x00000000       0x2a
  .comment       0x00000000       0x2a ./src/cr_startup_lpc11.o
                                  0x2b (size before relaxing)
+ .comment       0x00000000       0x2b ./src/dac.o
+ .comment       0x00000000       0x2b ./src/gpio.o
  .comment       0x00000000       0x2b ./src/main.o
+ .comment       0x00000000       0x2b ./src/ssp.o
  .comment       0x00000000       0x2b /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
  .comment       0x00000000       0x2b /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/../../../../arm-none-eabi/lib/armv6-m/libcr_c.a(__weak__main.o)
 
@@ -257,15 +380,24 @@ OUTPUT(loadframe.axf elf32-littlearm)
  .ARM.attributes
                 0x00000000       0x33 ./src/cr_startup_lpc11.o
  .ARM.attributes
-                0x00000033       0x33 ./src/main.o
+                0x00000033       0x33 ./src/dac.o
  .ARM.attributes
-                0x00000066       0x33 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+                0x00000066       0x33 ./src/gpio.o
  .ARM.attributes
-                0x00000099       0x33 /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/../../../../arm-none-eabi/lib/armv6-m/libcr_c.a(__weak__main.o)
+                0x00000099       0x33 ./src/main.o
  .ARM.attributes
-                0x000000cc       0x23 /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/armv6-m/libcr_eabihelpers.a(division.o)
+                0x000000cc       0x33 ./src/ssp.o
+ .ARM.attributes
+                0x000000ff       0x33 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .ARM.attributes
+                0x00000132       0x33 /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/../../../../arm-none-eabi/lib/armv6-m/libcr_c.a(__weak__main.o)
+ .ARM.attributes
+                0x00000165       0x23 /usr/local/lpcxpresso_4.3.0_1025/lpcxpresso/tools/bin/../lib/gcc/arm-none-eabi/4.5.1/armv6-m/libcr_eabihelpers.a(division.o)
 
-.debug_frame    0x00000000      0x158
+.debug_frame    0x00000000      0x3c0
  .debug_frame   0x00000000       0xe8 ./src/cr_startup_lpc11.o
- .debug_frame   0x000000e8       0x2c ./src/main.o
- .debug_frame   0x00000114       0x44 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
+ .debug_frame   0x000000e8       0x4c ./src/dac.o
+ .debug_frame   0x00000134      0x10c ./src/gpio.o
+ .debug_frame   0x00000240       0x2c ./src/main.o
+ .debug_frame   0x0000026c      0x110 ./src/ssp.o
+ .debug_frame   0x0000037c       0x44 /home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug/libCMSISv2p00_LPC11xx.a(system_LPC11xx.o)
