@@ -164,8 +164,8 @@ void SSP_IOConfig( uint8_t portNum )
 
   LPC_IOCON->PIO0_2 &= ~0x07;		/* SSP SSEL is a GPIO pin */
   /* port0, bit 2 is set to GPIO output and high */
-  GPIOSetDir( PORT0, 2, 1 );
   GPIOSetValue( PORT0, 2, 1 );
+  GPIOSetDir( PORT0, 2, 1 );
 #endif
   }
   else		/* port number 1 */
@@ -173,25 +173,20 @@ void SSP_IOConfig( uint8_t portNum )
 	LPC_SYSCON->PRESETCTRL |= (0x1<<2);
 	LPC_SYSCON->SYSAHBCLKCTRL |= (1<<18);
 	LPC_SYSCON->SSP1CLKDIV = 0x02;			/* Divided by 2 */
-	LPC_IOCON->PIO2_2 &= ~0x07;	/*  SSP I/O config */
-	LPC_IOCON->PIO2_2 |= 0x02;		/* SSP MISO */
+	/* Change the pinmode of the SPI pins to match the port we are
+	 * using */
 	LPC_IOCON->PIO2_3 &= ~0x07;	
 	LPC_IOCON->PIO2_3 |= 0x02;		/* SSP MOSI */
+
 	LPC_IOCON->PIO2_1 &= ~0x07;
 	LPC_IOCON->PIO2_1 |= 0x02;		/* SSP CLK */
  
-#if USE_CS
-	LPC_IOCON->PIO2_0 &= ~0x07;	
-	LPC_IOCON->PIO2_0 |= 0x02;		/* SSP SSEL */
-#else
-	/* Enable AHB clock to the GPIO domain. */
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1<<6);
-		
+
 	LPC_IOCON->PIO2_0 &= ~0x07;		/* SSP SSEL is a GPIO pin */
-	/* port2, bit 0 is set to GPIO output and high */
-	GPIOSetDir( PORT2, 0, 1 );
+	GPIOInit();
 	GPIOSetValue( PORT2, 0, 1 );
-#endif
+	GPIOSetDir( PORT2, 0, 1 );
+
   }
   return;		
 }
@@ -249,8 +244,8 @@ void SSP_Init( uint8_t portNum )
   }
   else
   {
-	/* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0, and SCR is 15 */
-	LPC_SSP1->CR0 = 0x0707;
+	/* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 1, and SCR is 15 */
+	LPC_SSP1->CR0 = 0x0787;
 
 	/* SSPCPSR clock prescale register, master mode, minimum divisor is 0x02 */
 	LPC_SSP1->CPSR = 0x2;
