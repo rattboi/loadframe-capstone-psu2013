@@ -22,12 +22,13 @@ int dac_send(uint16_t value)
 {
 	
        	uint8_t command_bytes[3];
-	command_bytes[0] = value & 0xff;
+	command_bytes[2] = value & 0xff;
 	command_bytes[1] = value >> 8;
-	command_bytes[2] = 0;
+	command_bytes[0] = 0;
 	
 
 	/* make sure we have a falling edge on ssel */
+	while ( (LPC_SSP1->SR & (SSPSR_TNF|SSPSR_BSY)) != SSPSR_TNF );
 	GPIOSetValue( PORT2, 0, 1 );
 	GPIOSetValue( PORT2, 0, 0 );
 

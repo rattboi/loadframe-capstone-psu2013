@@ -15,6 +15,7 @@
 #include <cr_section_macros.h>
 #include <NXP/crp.h>
 #include "gpio.h"
+#include <stdint.h>
 // Variable to store CRP value in. Will be placed automatically
 // by the linker when "Enable Code Read Protect" selected.
 // See crp.h header for more information
@@ -26,7 +27,7 @@ __CRP const unsigned int CRP_WORD = CRP_NO_CRP ;
 
 int main(void) {
 	GPIOInit();
-
+	dac_init();
 	  GPIOSetDir( 0, 5, 1);
 	  GPIOSetValue( 0,5,1);
 	  GPIOSetDir( 0, 3, 1);
@@ -36,10 +37,12 @@ int main(void) {
 	// TODO: insert code here
 
 	// Enter an infinite loop, just incrementing a counter
-	volatile static int i = 0 ;
+	volatile static uint16_t sample = 0 ;
+    int i;
+    dac_send(0xffff);
 	while(1) {
-
-		i++ ;
+		for( i = 0; i < 1; i++);
+		dac_send(sample++);
 	}
 	return 0 ;
 }
