@@ -135,38 +135,14 @@ void SSP_IOConfig( uint8_t portNum )
   LPC_IOCON->PIO0_8           |= 0x01;		/* SSP MISO */
   LPC_IOCON->PIO0_9           &= ~0x07;	
   LPC_IOCON->PIO0_9           |= 0x01;		/* SSP MOSI */
-#ifdef __JTAG_DISABLED
-	LPC_IOCON->SCK_LOC = 0x00;
-	LPC_IOCON->SWCLK_PIO0_10 &= ~0x07;
-	LPC_IOCON->SWCLK_PIO0_10 |= 0x02;		/* SSP CLK */
-#else
-#if 0
-	/* On HummingBird/Candiru 1(HB1/CD1), SSP CLK can be routed to different 
-	pins, other than JTAG TCK, it's either P2.11 func. 1 or P0.6 func. 2. */
-  LPC_IOCON->SCK_LOC = 0x01;
-	LPC_IOCON->PIO2_11 = 0x01;	/* P2.11 function 1 is SSP clock, need to 
-								combined with IOCONSCKLOC register setting */
-#else
 
 	LPC_IOCON->SCK_LOC = 0x2;
 	LPC_IOCON->PIO0_6 &= ~(0b111);
 	LPC_IOCON->PIO0_6 |= 0x02;/* P0.6 function 2 is SSP clock, need to
 								combined with IOCONSCKLOC register setting */
-#endif
-#endif	/* endif __JTAG_DISABLED */  
 
-#if USE_CS
   LPC_IOCON->PIO0_2 &= ~0x07;	
   LPC_IOCON->PIO0_2 |= 0x01;		/* SSP SSEL */
-#else
-	/* Enable AHB clock to the GPIO domain. */
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1<<6);
-
-  LPC_IOCON->PIO0_2 &= ~0x07;		/* SSP SSEL is a GPIO pin */
-  /* port0, bit 2 is set to GPIO output and high */
-  GPIOSetValue( PORT0, 2, 1 );
-  GPIOSetDir( PORT0, 2, 1 );
-#endif
   }
   else		/* port number 1 */
   {
@@ -207,7 +183,7 @@ void SSP_Init( uint8_t portNum )
   if ( portNum == 0 )
   {
   /* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0, and SCR is 15 */
-	LPC_SSP0->CR0 = 0x000F;
+	LPC_SSP0->CR0 = 0x0f0F;
 
   /* SSPCPSR clock prescale register, master mode, minimum divisor is 0x02 */
 	LPC_SSP0->CPSR = 16;
@@ -369,7 +345,7 @@ void SSP_Send( uint8_t portNum, uint16_t *buf, uint32_t Length )
 	/* Whenever a byte is written, MISO FIFO counter increments, Clear FIFO 
 	on MISO. Otherwise, when SSP0Receive() is called, previous data byte
 	is left in the FIFO. */
-	  Dummy = LPC_SSP0->DR;
+	  //Dummy = LPC_SSP0->DR;
 #else
 	/* Wait until the Busy bit is cleared. */
 	  while ( LPC_SSP0->SR & SSPSR_BSY );
@@ -405,49 +381,25 @@ void SSP_Send( uint8_t portNum, uint16_t *buf, uint32_t Length )
 ** Returned value:		None
 ** 
 *****************************************************************************/
-void SSP_Receive( uint8_t portNum, uint8_t *buf, uint32_t Length )
+void SSP_Receive( uint8_t portNum, uint16_t *buf, uint32_t Length )
 {
   uint32_t i;
  
   for ( i = 0; i < Length; i++ )
   {
-	/* As long as Receive FIFO is not empty, I can always receive. */
-	/* If it's a loopback test, clock is shared for both TX and RX,
-	no need to write dummy byte to get clock to get the data */
-	/* if it's a peer-to-peer communication, SSPDR needs to be written
-	before a read can take place. */
-	if ( portNum == 0 )
-	{
-#if !LOOPBACK_MODE
-#if SSP_SLAVE
-	  while ( !(LPC_SSP0->SR & SSPSR_RNE) );
-#else
-	  LPC_SSP0->DR = 0xFF;
-	/* Wait until the Busy bit is cleared */
-	  while ( (LPC_SSP0->SR & (SSPSR_BSY|SSPSR_RNE)) != SSPSR_RNE );
-#endif
-#else
-	  while ( !(LPC_SSP0->SR & SSPSR_RNE) );
-#endif
-	  *buf = LPC_SSP0->DR;
-	  buf++;
-	}
-	else
-	{
-#if !LOOPBACK_MODE
-#if SSP_SLAVE
-	  while ( !(LPC_SSP1->SR & SSPSR_RNE) );
-#else
-	  LPC_SSP1->DR = 0xFF;
-	  /* Wait until the Busy bit is cleared */
-	  while ( (LPC_SSP1->SR & (SSPSR_BSY|SSPSR_RNE)) != SSPSR_RNE );
-#endif
-#else
-	  while ( !(LPC_SSP1->SR & SSPSR_RNE) );
-#endif
-	  *buf = LPC_SSP1->DR;
-	buf++;
-	}
+          /* As long as Receive FIFO is not empty, I can always receive. */
+          /* If it's a loopback test, clock is shared for both TX and RX,
+             no need to write dummy byte to get clock to get the data */
+          /* if it's a peer-to-peer communication, SSPDR needs to be written
+             before a read can take place. */
+          if ( portNum == 0 )
+          {
+                  //LPC_SSP0->DR = 0xFF;
+                  /* Wait until the Busy bit is cleared */
+                  while ( (LPC_SSP0->SR & (SSPSR_BSY|SSPSR_RNE)) != SSPSR_RNE );
+                  *buf = LPC_SSP0->DR;
+                  buf++;
+          }
   }
   return; 
 }
