@@ -31,6 +31,7 @@ int main(void) {
 	GPIOInit();
 	dac_init();
   adc_init();
+
 	  GPIOSetDir( 0, 5, 1);
 	  GPIOSetValue( 0,5,1);
 	  GPIOSetDir( 0, 3, 1);
@@ -38,7 +39,7 @@ int main(void) {
 	  GPIOSetDir( 0, 4, 1);
 	  GPIOSetValue( 0,4,1);
 	// TODO: insert code here
-
+	  sseg_init();
 	// Enter an infinite loop, just incrementing a counter
 	volatile static uint16_t sample = 0 ;
   adc_channels adc_data;
