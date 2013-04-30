@@ -30,25 +30,33 @@ __CRP const unsigned int CRP_WORD = CRP_NO_CRP ;
 int main(void) {
 	GPIOInit();
 	dac_init();
-  adc_init();
+    adc_init();
+    sseg_init();
 
-	  GPIOSetDir( 0, 5, 1);
-	  GPIOSetValue( 0,5,1);
-	  GPIOSetDir( 0, 3, 1);
-	  GPIOSetValue( 0,3,1);
-	  GPIOSetDir( 0, 4, 1);
-	  GPIOSetValue( 0,4,1);
+    GPIOSetDir( 0, 5, 1);
+    GPIOSetValue( 0,5,1);
+    GPIOSetDir( 0, 3, 1);
+    GPIOSetValue( 0,3,1);
+    GPIOSetDir( 0, 4, 1);
+    GPIOSetValue( 0,4,1);
 	// TODO: insert code here
-	  sseg_init();
+
 	// Enter an infinite loop, just incrementing a counter
 	volatile static uint16_t sample = 0 ;
   adc_channels adc_data;
     int i;
-    dac_send(0xffff);
-	while(1) {
+    uint32_t sum;
+    while(1) {
+		sum = 0;
+		for (i = 0; i < 32; i++) {
           adc_data = adc_read();
-          dac_send(adc_data.loadcell/2 + adc_data.lvdt/2);
-
+          sum += adc_data.loadcell;
+		}
+		sum /= 32;
+		dac_send(sum);
+		SysTick->CTRL &=~1;
+		update_display(sum);
+		SysTick->CTRL |=1;
 	}
 	return 0 ;
 }
