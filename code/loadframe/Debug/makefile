@@ -29,7 +29,7 @@ all: loadframe.axf
 loadframe.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -L"/home/agoetz/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug" -Xlinker -Map="loadframe.map" -Xlinker --gc-sections -mcpu=cortex-m0 -mthumb -T "loadframe_Debug.ld" -o"loadframe.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -L"/home/rattboi/Code/loadframe-capstone-psu2013/code/CMSISv2p00_LPC11xx/Debug" -Xlinker -Map="loadframe.map" -Xlinker --gc-sections -mcpu=cortex-m0 -mthumb -T "loadframe_Debug.ld" -o"loadframe.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build

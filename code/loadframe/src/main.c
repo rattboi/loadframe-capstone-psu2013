@@ -18,6 +18,8 @@
 #include <stdint.h>
 #include "adc.h"
 #include "dac.h"
+#include "sseg.h"
+
 // Variable to store CRP value in. Will be placed automatically
 // by the linker when "Enable Code Read Protect" selected.
 // See crp.h header for more information
@@ -46,16 +48,21 @@ int main(void) {
   adc_channels adc_data;
     int i;
     uint32_t sum;
+    uint32_t sum2;
     while(1) {
 		sum = 0;
+		sum2 = 0;
 		for (i = 0; i < 32; i++) {
           adc_data = adc_read();
           sum += adc_data.loadcell;
+          sum2 += adc_data.lvdt;
 		}
 		sum /= 32;
+		sum2 /= 32;
 		dac_send(sum);
 		SysTick->CTRL &=~1;
-		update_display(sum);
+		update_display(LOADC_DISP, sum);
+		update_display(LVDT_DISP,  sum2);
 		SysTick->CTRL |=1;
 	}
 	return 0 ;
