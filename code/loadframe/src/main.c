@@ -29,36 +29,41 @@ __CRP const unsigned int CRP_WORD = CRP_NO_CRP ;
 
 // TODO: insert other definitions and declarations here
 
-int ProcessToggleButton(int pin)
+void ProcessTareButtons();
+void ProcessToggleSwitch();
+void ProcessEncoder();
+
+int ProcessButton(int port, int bit)
 {
 
 #define INTEGRATOR_MAX 500
 
-	static int integrator[2] = {0,0};
-	static int output[2] = {1,1};
-
+	static int integrator[3][11];
+	static int output[3][11] = {{[0 ... 10] = 1},
+								{[0 ... 10] = 1},
+								{[0 ... 10] = 1}};
 	int button_state;
 
-	button_state = (!! LPC_GPIO[1]->MASKED_ACCESS[1 << (pin + 5)]);
+	button_state = (!! LPC_GPIO[port]->MASKED_ACCESS[1 << (bit)]);
 
 	if (button_state == 0)
 	{
-		if (integrator[pin] > 0)
-			integrator[pin]--;
+		if (integrator[port][bit] > 0)
+			integrator[port][bit]--;
 	}
-	else if (integrator[pin] < INTEGRATOR_MAX)
-		integrator[pin]++;
+	else if (integrator[port][bit] < INTEGRATOR_MAX)
+		integrator[port][bit]++;
 
-	if (integrator[pin] == 0)
+	if (integrator[port][bit] == 0)
 	{
-		output[pin] = 0;
+		output[port][bit] = 0;
 	}
-	else if (integrator[pin] >= INTEGRATOR_MAX)
+	else if (integrator[port][bit] >= INTEGRATOR_MAX)
 	{
-		integrator[pin] = INTEGRATOR_MAX;
-		output[pin] = 1;
+		integrator[port][bit] = INTEGRATOR_MAX;
+		output[port][bit] = 1;
 	}
-	return !(output[pin]);
+	return !(output[port][bit]);
 }
 
 int GetButton(int pin)
@@ -67,7 +72,7 @@ int GetButton(int pin)
 	static int last_state[6] ;
 	static int state[6];
 
-	state[pin] = ProcessToggleButton(pin);
+	//state[pin] = ProcessButton(pin);
 
 	if (state[pin] == 1 && last_state[pin] != 1 )
 	{
@@ -91,15 +96,25 @@ int main(void) {
     GPIOSetValue( 0,4,1);
 	// TODO: insert code here
 
+    // Set Tare buttons as inputs
     GPIOSetDir( 1, 5, 0);
     GPIOSetDir( 1, 6, 0);
+
+    // Set toggle lines as inputs
+    GPIOSetDir( 1, 2, 0);
+    GPIOSetDir( 1, 4, 0);
+
+    // Set 2-bit encoder as inputs
+    GPIOSetDir( 0, 11, 0);
+    GPIOSetDir( 1, 0, 0);
 
 	// Enter an infinite loop, just incrementing a counter
 	volatile static uint16_t sample = 0 ;
 	adc_channels adc_data;
     int i = 0;
-    int left,right;
-    int left_last,right_last;
+
+    int enc1, enc2;
+
     uint32_t sum;
     uint32_t sum2;
     const int count = 1024;
@@ -120,17 +135,72 @@ int main(void) {
 		}
 		//dac_send(sum);
 
-		left =  ProcessToggleButton(0);
-		right = ProcessToggleButton(1);
+		// Do tare button stuff
+		ProcessTareButtons();
 
-		if (left && !left_last)
-			blink_left();
+		//Do toggle stuff
+		ProcessToggleSwitch();
 
-		if (right && !right_last)
-			blink_right();
-
-		left_last = left;
-		right_last = right;
+		//Do encoder stuff
+		ProcessEncoder();
 	}
 	return 0 ;
+}
+
+void ProcessTareButtons()
+{
+	static int left_last = 0;
+	static int right_last = 0;
+
+	int left,right;
+
+	left =  ProcessButton(1,5);
+	right = ProcessButton(1,6);
+
+	if (left && !left_last)
+		blink_left();
+
+	if (right && !right_last)
+		blink_right();
+
+	left_last = left;
+	right_last = right;
+}
+
+void ProcessToggleSwitch()
+{
+    static int switch1_last = 0;
+    static int switch2_last = 0;
+    int switch1, switch2;
+
+    int i = 0;
+
+	//Do toggle stuff
+    switch1 = ProcessButton(1,4);
+    switch2 = ProcessButton(1,2);
+
+    if (switch1 && !switch1_last)
+    	i ^= 1;
+
+    if (switch2 && !switch2_last)
+    	i ^= 1;
+
+    switch1_last = switch1;
+    switch2_last = switch2;
+
+}
+
+
+void ProcessEncoder()
+{
+	static int enc1_last = 0;
+	static int enc2_last = 0;
+
+	int enc1, enc2;
+
+	enc1 = ProcessButton(0,11);
+	enc2 = ProcessButton(1,0);
+
+	enc1_last = enc1;
+	enc2_last = enc2;
 }
