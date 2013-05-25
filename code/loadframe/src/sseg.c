@@ -21,8 +21,8 @@ typedef struct { uint8_t PORT;
 			     uint8_t COUNT_CP;
 			     uint8_t COUNT_MR;
 			     uint8_t mode;
-			     uint16_t count;
 			     uint8_t blink_digit;
+			     uint32_t setpoint;
 } SSEG;
 
 SSEG sseg[NUM_DISPLAYS] = {
@@ -43,7 +43,7 @@ SSEG sseg[NUM_DISPLAYS] = {
 		    LVDT_SHIFT_LE,
 		    LVDT_COUNT_CP,
 		    LVDT_COUNT_MR,
-			1,
+			0,
 			0,
 			0}
 };
@@ -127,16 +127,37 @@ void blink_left()
 {
 	if (sseg[1].blink_digit < 4)
 		sseg[1].blink_digit++;
-//	else
-//		sseg[1].blink_digit = 0;
 }
 
 void blink_right()
 {
 	if (sseg[1].blink_digit > 0)
 		sseg[1].blink_digit--;
-//	else
-//		sseg[1].blink_digit = 4;
+}
+
+void set_mode(int disp, int mode)
+{
+	sseg[disp].mode = mode;
+}
+
+int mod_setpoint(int setpoint, int diff)
+{
+	int mult = 1;
+	int i;
+
+	for ( i = 0; i < sseg[1].blink_digit; i++)
+	{
+		mult *= 10;
+	}
+
+	if (diff == -1 && (setpoint / mult) % 10 != 0)
+		return setpoint + (diff * mult);
+
+	if (diff == 1 && (setpoint / mult) % 10 != 9)
+		return setpoint + (diff * mult);
+
+	return setpoint;
+
 }
 
 void SysTick_Handler(void) {
