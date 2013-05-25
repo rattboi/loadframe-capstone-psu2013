@@ -125,7 +125,7 @@ int main(void) {
 
     uint32_t sum;
     uint32_t sum2;
-    uint32_t setpoint = 0;
+    int32_t setpoint = 0;
 
     const int count = 1024;
 

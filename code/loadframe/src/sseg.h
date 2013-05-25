@@ -31,6 +31,6 @@
 #define LVDT_SHIFT_LE 0
 
 int sseg_init(void);
-void update_display(uint32_t disp, uint32_t num);
+void update_display(uint32_t disp, int32_t num);
 
 #endif /* SSEG_H_ */

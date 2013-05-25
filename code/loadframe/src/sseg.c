@@ -70,7 +70,9 @@ void sendval(uint32_t disp, char value) {
 
 //converts a bcd number to 7seg value
 //segment ordering: .gfedcba
-uint8_t bcdto7seg(uint8_t num) {
+uint8_t bcdto7seg(int8_t num) {
+	if (num < 0)
+		num *= -1;
 	switch(num){
 	case 0:
 		return 0x3f;
@@ -110,17 +112,19 @@ uint8_t bcdto7seg(uint8_t num) {
 	}
 }
 
-void update_display(uint32_t disp, uint32_t num){
+void update_display(uint32_t disp, int32_t num){
 	int i;
 
-	if (num < 100000)
-		for(i = 0; i < NUM_DIGS; i++) {
-			writebuf[disp][i] = bcdto7seg(num % 10);
-			num /= 10;
-		}
-	else
-		for(i = 0; i < NUM_DIGS; i++)
-			writebuf[disp][i] = bcdto7seg(0xff);
+	if (num < 0)
+			writebuf[disp][4] = 0x40;
+	for(i = 0; i < NUM_DIGS -1; i++) {
+		writebuf[disp][i] = bcdto7seg(num % 10);
+		if(i == 3 && disp ==1)
+			writebuf[disp][i] |= 0x80;
+		num /= 10;
+	}
+
+
 }
 
 void blink_left()
@@ -150,11 +154,18 @@ int mod_setpoint(int setpoint, int diff)
 		mult *= 10;
 	}
 
+	if(sseg[1].blink_digit != 3) {
 	if (diff == -1 && (setpoint / mult) % 10 != 0)
 		return setpoint + (diff * mult);
 
 	if (diff == 1 && (setpoint / mult) % 10 != 9)
 		return setpoint + (diff * mult);
+	} else {
+		if (diff == -1 && setpoint / mult > -3)
+			return setpoint +(diff *mult);
+		else if (diff == 1 && setpoint / mult < 3)
+			return setpoint + (diff * mult);
+	}
 
 	return setpoint;
 
