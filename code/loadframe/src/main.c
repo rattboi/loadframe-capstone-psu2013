@@ -129,7 +129,7 @@ int main(void) {
 
     const int count = 1024;
 
-    // seed internal values of encoder
+    // seed internal static values of encoder
     ProcessEncoder();
 
     int diff;
@@ -222,77 +222,18 @@ int ProcessEncoder()
 	static int enc_last = 0;
 
 	int enc;
-	int rot_val = 0;
+	int rot_val;
+
+	int rots[4][4] = {{ 0, -1,  1,  0},
+					  { 1,  0,  0, -1},
+					  {-1,  0,  0,  1},
+					  { 0,  1, -1,  0}};
 
 	enc = (ProcessButton(1,0) << 1) | ProcessButton(0,11);
 
-	if (enc != enc_last)
-	{
-		switch (enc_last)
-		{
-		case 0:
-			switch (enc)
-			{
-			case 1:
-				rot_val = -1;
-				break;
-			case 2:
-				rot_val = 1;
-				break;
-			default:
-				rot_val = 0;
-				break;
-			}
-			break;
-		case 1:
-			switch (enc)
-			{
-			case 3:
-				rot_val = -1;
-				break;
-			case 0:
-				rot_val = 1;
-				break;
-			default:
-				rot_val = 0;
-				break;
-			}
-			break;
-		case 3:
-			switch (enc)
-			{
-			case 2:
-				rot_val = -1;
-				break;
-			case 1:
-				rot_val = 1;
-				break;
-			default:
-				rot_val = 0;
-				break;
-			}
-			break;
-		case 2:
-			switch (enc)
-			{
-			case 0:
-				rot_val = -1;
-				break;
-			case 3:
-				rot_val = 1;
-				break;
-			default:
-				rot_val = 0;
-				break;
-			}
-			break;
-		}
-	}
+	rot_val = rots[enc_last][enc];
 
 	enc_last = enc;
-
-	if (rot_val != 0)
-		enc_last = enc;
 
 	return rot_val;
 }

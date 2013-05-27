@@ -6,6 +6,7 @@
  */
 
 #include "sseg.h"
+#include "driver_config.h"
 #include "gpio.h"
 #include "LPC11xx.h"
 #include "core_cm0.h"
@@ -70,10 +71,13 @@ void sendval(uint32_t disp, char value) {
 
 //converts a bcd number to 7seg value
 //segment ordering: .gfedcba
-uint8_t bcdto7seg(int8_t num) {
+uint8_t bcdto7seg(int8_t num)
+{
 	if (num < 0)
 		num *= -1;
-	switch(num){
+
+	switch(num)
+	{
 	case 0:
 		return 0x3f;
 		break;
@@ -104,9 +108,6 @@ uint8_t bcdto7seg(int8_t num) {
 	case 9:
 		return 0b01100111;
 		break;
-	case 0xBB:
-		return 0;
-		break;
 	default:
 		return 0x40;
 	}
@@ -116,20 +117,26 @@ void update_display(uint32_t disp, int32_t num){
 	int i;
 
 	if (num < 0)
-			writebuf[disp][4] = 0x40;
-	for(i = 0; i < NUM_DIGS -1; i++) {
+		writebuf[disp][4] = 0x40;
+	else
+		writebuf[disp][4] = 0x00;
+
+
+	for(i = 0; i < NUM_DIGS; i++)
+	{
+		if (i == NUM_DIGS - 1 && disp == 1)
+			continue;
+
 		writebuf[disp][i] = bcdto7seg(num % 10);
 		if(i == 3 && disp ==1)
 			writebuf[disp][i] |= 0x80;
 		num /= 10;
 	}
-
-
 }
 
 void blink_left()
 {
-	if (sseg[1].blink_digit < 4)
+	if (sseg[1].blink_digit < NUM_DIGS - 2)
 		sseg[1].blink_digit++;
 }
 
@@ -154,18 +161,25 @@ int mod_setpoint(int setpoint, int diff)
 		mult *= 10;
 	}
 
-	if(sseg[1].blink_digit != 3) {
-	if (diff == -1 && (setpoint / mult) % 10 != 0)
-		return setpoint + (diff * mult);
-
-	if (diff == 1 && (setpoint / mult) % 10 != 9)
-		return setpoint + (diff * mult);
-	} else {
-		if (diff == -1 && setpoint / mult > -3)
-			return setpoint +(diff *mult);
-		else if (diff == 1 && setpoint / mult < 3)
+//	if(sseg[1].blink_digit != 3)
+//	{
+		if (diff == -1 && (setpoint + (diff * mult)) >= -3000)
+		{
 			return setpoint + (diff * mult);
-	}
+		}
+
+		if (diff == 1 && (setpoint + (diff * mult)) <= 3000)
+		{
+			return setpoint + (diff * mult);
+		}
+//	}
+//	else
+//	{
+//		if (diff == -1 && setpoint / mult > -3)
+//			return setpoint + (diff * mult);
+//		else if (diff == 1 && setpoint / mult < 3)
+//			return setpoint + (diff * mult);
+//	}
 
 	return setpoint;
 
