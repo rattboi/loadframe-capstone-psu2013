@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 13 Apr 2013 09:40:46 PM PDT
+EESchema Schematic File Version 2  date Mon 27 May 2013 12:10:10 PM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -30,16 +30,15 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:custom
-LIBS:display-cache
 EELAYER 27 0
 EELAYER END
 $Descr User 11000 8500
 encoding utf-8
 Sheet 1 1
-Title ""
-Date "14 apr 2013"
-Rev ""
-Comp ""
+Title "7 segment Display Board"
+Date "27 may 2013"
+Rev "v1.0"
+Comp "Portland State University"
 Comment1 ""
 Comment2 ""
 Comment3 ""
@@ -584,7 +583,7 @@ L R R106
 U 1 1 51397111
 P 6600 6250
 F 0 "R106" V 6680 6250 50  0000 C CNN
-F 1 "750" V 6600 6250 50  0000 C CNN
+F 1 "1.8k" V 6600 6250 50  0000 C CNN
 F 2 "" H 6600 6250 60  0001 C CNN
 F 3 "" H 6600 6250 60  0001 C CNN
 	1    6600 6250

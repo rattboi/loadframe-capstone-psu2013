@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 14 Apr 2013 12:46:54 AM PDT
+EESchema Schematic File Version 2  date Mon 27 May 2013 12:28:10 PM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 4
 Title ""
-Date "14 apr 2013"
+Date "27 may 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -436,7 +436,7 @@ $Comp
 L 74LVCE1G06 U201
 U 1 1 5150CD51
 P 3400 3950
-F 0 "U201" H 3250 3950 60  0000 C CNN
+F 0 "U201" H 3600 3750 60  0000 C CNN
 F 1 "74LVCE1G06" V 3100 3950 60  0000 C CNN
 F 2 "~" H 3400 3950 60  0000 C CNN
 F 3 "~" H 3400 3950 60  0000 C CNN
@@ -627,4 +627,6 @@ F 3 "" H 7450 5050 60  0000 C CNN
 $EndComp
 Text Notes 7450 6200 0    60   ~ 0
 Diagnostic LEDs\n
+Text Notes 2650 4650 0    60   ~ 0
+DO NOT POPULATE U201
 $EndSCHEMATC
