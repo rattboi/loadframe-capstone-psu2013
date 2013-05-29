@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 14 Apr 2013 12:46:54 AM PDT
+EESchema Schematic File Version 2  date Mon 27 May 2013 12:28:10 PM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 4
 Title ""
-Date "14 apr 2013"
+Date "27 may 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -407,4 +407,6 @@ Wire Wire Line
 	7400 4900 4600 4900
 Text HLabel 4600 4900 0    60   Input ~ 0
 Aux2
+Text Notes 4550 3200 0    60   ~ 0
+NOTE: DO NOT POPULATE ANY RESISTORS!
 $EndSCHEMATC
