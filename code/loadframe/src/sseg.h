@@ -12,6 +12,10 @@
 #define LOADC_DISP 0
 #define LVDT_DISP  1
 
+#define MODE_SETPOINT 0
+#define MODE_EXECUTE 1
+#define MODE_MANUAL 2
+
 #define LOADC_PORT 2
 
 #define LOADC_SHIFT_OE 9

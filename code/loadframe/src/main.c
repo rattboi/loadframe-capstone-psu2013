@@ -66,22 +66,6 @@ int ProcessButton(int port, int bit)
 	return !(output[port][bit]);
 }
 
-int GetButton(int pin)
-{
-	static int button[6];
-	static int last_state[6] ;
-	static int state[6];
-
-	//state[pin] = ProcessButton(pin);
-
-	if (state[pin] == 1 && last_state[pin] != 1 )
-	{
-		button[pin] = button[pin] ^ 1;
-	}
-
-	last_state[pin] = state[pin];
-}
-
 void debug_init()
 {
 	GPIOSetDir( 0, 5, 1);
@@ -94,7 +78,7 @@ void debug_init()
 
 void ui_init()
 {
-    // Set Tare buttons as inputs
+    // Set setpoint selection buttons as inputs
     GPIOSetDir( 1, 5, 0);
     GPIOSetDir( 1, 6, 0);
 
@@ -112,10 +96,37 @@ uint16_t conv_to_voltage(int setpoint)
 	uint32_t maths;
 	uint16_t retval;
 
-	maths = ((setpoint + 3000) * 65535)/6000;
+//	maths = ((setpoint + 3000) * 65535)/6000;
+	maths = (((setpoint + 3000) * (60204 - 6138))/6000)+6138;
 	retval = (uint16_t)maths;
 
 	return retval;
+}
+
+int conv_to_setpoint(uint16_t voltage)
+{
+	int maths;
+	int retval;
+
+	maths = ((voltage - 6138) * 6000)/(60204 - 6138)-3000;
+	retval = (int)maths;
+
+	return retval;
+}
+
+int32_t update_manual_sp()
+{
+	int i;
+	adc_channels adc_data;
+	uint32_t sum = 0;
+
+    for (i = 0; i < 1024; i++)
+    {
+		adc_data = adc_read();
+		sum += adc_data.lvdt;
+    }
+
+    return conv_to_setpoint(sum/1024);
 }
 
 int main(void) {
@@ -131,70 +142,90 @@ int main(void) {
 	adc_channels adc_data;
     int i = 0;
 
-    int mode;
+    int mode, mode_last;
 
     uint32_t sum;
     uint32_t sum2;
-    int32_t setpoint = 0;
+    int diff;
+    int32_t exec_sp = 0;
+    int32_t manual_sp;
+
+    int32_t *setpoint;
+
+    manual_sp = update_manual_sp();
 
     const int count = 1024;
 
     // seed internal static values of encoder
     ProcessEncoder();
 
-    int diff;
-
-	conv_to_voltage(-3000);
-	conv_to_voltage(-1500);
-	conv_to_voltage(0);
-	conv_to_voltage(1500);
-	conv_to_voltage(3000);
+    // determine initial mode
+    mode = mode_last = ProcessToggleSwitch();
 
     while(1) {
     	i++;
 
+		// Do UI stuff
+		ProcessTareButtons();
+		diff = ProcessEncoder();
     	mode = ProcessToggleSwitch();
+
+    	if (mode == MODE_SETPOINT)
+    		setpoint = &exec_sp;
+    	else if (mode == MODE_MANUAL)
+    		setpoint = &manual_sp;
+    	// FIXME: setpoint isn't set for MODE_EXECUTE
+
+		if (diff && mode == MODE_SETPOINT)
+			exec_sp = mod_setpoint(exec_sp, diff);
+
+		if (diff && mode == MODE_MANUAL)
+			manual_sp = mod_setpoint(manual_sp, diff);
 
 		adc_data = adc_read();
 		sum += adc_data.loadcell;
 		sum2 += adc_data.lvdt;
+
 		if (!(i % count))
 		{
 			sum /= count;
 			sum2 /= count;
 			SysTick->CTRL &=~1;
-			update_display(LOADC_DISP, sum);
-			if (mode == 0)
+		//	update_display(LOADC_DISP, sum);
+
+			switch(mode)
 			{
-				set_mode(1,0);
-				update_display(LVDT_DISP,  sum2);
+			case MODE_SETPOINT:
+				set_mode(LVDT_DISP,1);
+				update_display(LVDT_DISP,  *setpoint);
+				break;
+			case MODE_EXECUTE:
+				set_mode(LVDT_DISP,0);
+				update_display(LVDT_DISP,  conv_to_setpoint(sum2));
+				break;
+			case MODE_MANUAL:
+				set_mode(LVDT_DISP,1);
+				update_display(LVDT_DISP,  *setpoint);
+				break;
 			}
-			else if (mode == 1)
-			{
-				set_mode(1,0);
-				update_display(LVDT_DISP,  12345);
-			}
-			else
-			{
-				set_mode(1,1);
-				update_display(LVDT_DISP,  setpoint);
-			}
+
+			update_display(LOADC_DISP, conv_to_voltage(*setpoint));
 			SysTick->CTRL |=1;
+
 			i = sum = sum2 = 0;
 		}
-//		dac_send(conv_to_voltage(setpoint));
 
-		// Do tare button stuff
-		ProcessTareButtons();
+		if (!(i % 256))
+		{
+			if (mode == MODE_MANUAL)
+				dac_send(conv_to_voltage(*setpoint));
+		}
 
-		//Do toggle stuff
-		ProcessToggleSwitch();
+		if (mode != mode_last)
+			if (mode == MODE_MANUAL)
+				manual_sp = update_manual_sp();
 
-		//Do encoder stuff
-		diff = ProcessEncoder();
-
-		if (diff && mode == 2)
-			setpoint = mod_setpoint(setpoint, diff);
+		mode_last = mode;
 	}
 	return 0 ;
 }

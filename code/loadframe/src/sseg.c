@@ -157,9 +157,7 @@ int mod_setpoint(int setpoint, int diff)
 	int i;
 
 	for ( i = 0; i < sseg[1].blink_digit; i++)
-	{
 		mult *= 10;
-	}
 
 	if (diff == -1)
 		if (setpoint + (diff * mult) >= -3000)
@@ -174,7 +172,6 @@ int mod_setpoint(int setpoint, int diff)
 			return 3000;
 
 	return setpoint;
-
 }
 
 void SysTick_Handler(void) {
