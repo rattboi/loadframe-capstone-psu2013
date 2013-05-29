@@ -161,25 +161,17 @@ int mod_setpoint(int setpoint, int diff)
 		mult *= 10;
 	}
 
-//	if(sseg[1].blink_digit != 3)
-//	{
-		if (diff == -1 && (setpoint + (diff * mult)) >= -3000)
-		{
+	if (diff == -1)
+		if (setpoint + (diff * mult) >= -3000)
 			return setpoint + (diff * mult);
-		}
+		else
+			return -3000;
 
-		if (diff == 1 && (setpoint + (diff * mult)) <= 3000)
-		{
+	if (diff == 1)
+		if (setpoint + (diff * mult) <= 3000)
 			return setpoint + (diff * mult);
-		}
-//	}
-//	else
-//	{
-//		if (diff == -1 && setpoint / mult > -3)
-//			return setpoint + (diff * mult);
-//		else if (diff == 1 && setpoint / mult < 3)
-//			return setpoint + (diff * mult);
-//	}
+		else
+			return 3000;
 
 	return setpoint;
 

@@ -107,6 +107,17 @@ void ui_init()
     GPIOSetDir( 1, 0, 0);
 }
 
+uint16_t conv_to_voltage(int setpoint)
+{
+	uint32_t maths;
+	uint16_t retval;
+
+	maths = ((setpoint + 3000) * 65535)/6000;
+	retval = (uint16_t)maths;
+
+	return retval;
+}
+
 int main(void) {
 	GPIOInit();
 	dac_init();
@@ -116,7 +127,6 @@ int main(void) {
     debug_init();
     ui_init();
 
-	// Enter an infinite loop, just incrementing a counter
 	volatile static uint16_t sample = 0 ;
 	adc_channels adc_data;
     int i = 0;
@@ -133,6 +143,12 @@ int main(void) {
     ProcessEncoder();
 
     int diff;
+
+	conv_to_voltage(-3000);
+	conv_to_voltage(-1500);
+	conv_to_voltage(0);
+	conv_to_voltage(1500);
+	conv_to_voltage(3000);
 
     while(1) {
     	i++;
@@ -166,7 +182,7 @@ int main(void) {
 			SysTick->CTRL |=1;
 			i = sum = sum2 = 0;
 		}
-		//dac_send(sum);
+//		dac_send(conv_to_voltage(setpoint));
 
 		// Do tare button stuff
 		ProcessTareButtons();
