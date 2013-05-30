@@ -12,6 +12,7 @@
 #define LOADC_DISP 0
 #define LVDT_DISP  1
 
+#define NUM_MODES 3
 #define MODE_SETPOINT 0
 #define MODE_EXECUTE 1
 #define MODE_MANUAL 2
@@ -39,5 +40,6 @@ void update_display(uint32_t disp, int32_t num);
 void set_mode(int disp, int mode);
 void blink_left();
 void blink_right();
+int mod_setpoint(int setpoint, int diff);
 
 #endif /* SSEG_H_ */

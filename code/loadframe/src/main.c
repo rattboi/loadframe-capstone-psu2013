@@ -36,7 +36,7 @@ int ProcessEncoder();
 int ProcessButton(int port, int bit)
 {
 
-#define INTEGRATOR_MAX 200
+#define INTEGRATOR_MAX 100
 
 	static int integrator[3][12];
 	static int output[3][12] = {{[0 ... 11] = 1},
@@ -107,8 +107,9 @@ int conv_to_setpoint(uint16_t voltage)
 {
 	int maths;
 	int retval;
+	voltage = 65535 - voltage;
 
-	maths = ((voltage - 6138) * 6000)/(60204 - 6138)-3000;
+	maths = ((((int)voltage - 8700) * 6000)/(56300 - 8700)-3000);
 	retval = (int)maths;
 
 	return retval;
@@ -130,6 +131,27 @@ int32_t update_manual_sp()
 }
 
 int main(void) {
+	volatile static uint16_t sample = 0 ;
+	adc_channels adc_data;
+    const int count = 1024;
+    int i = 0;
+    int ex_mode = 0, ex_last = 0;
+
+    int mode, mode_last;
+
+    uint32_t sum;
+    uint32_t sum2;
+    int diff;
+
+    int32_t exec_sp, curr_sp, manual_sp;
+    int32_t ex_going;
+    int32_t *setpoint, *setpoints[NUM_MODES];
+
+    exec_sp = curr_sp = manual_sp = 0;
+    setpoints[MODE_SETPOINT] = &exec_sp;
+    setpoints[MODE_MANUAL]   = &manual_sp;
+    setpoints[MODE_EXECUTE]  = &curr_sp;
+
 	GPIOInit();
 	dac_init();
     adc_init();
@@ -138,23 +160,8 @@ int main(void) {
     debug_init();
     ui_init();
 
-	volatile static uint16_t sample = 0 ;
-	adc_channels adc_data;
-    int i = 0;
-
-    int mode, mode_last;
-
-    uint32_t sum;
-    uint32_t sum2;
-    int diff;
-    int32_t exec_sp = 0;
-    int32_t manual_sp;
-
-    int32_t *setpoint;
-
+    //initialize manual setpoint to be current LVDT value
     manual_sp = update_manual_sp();
-
-    const int count = 1024;
 
     // seed internal static values of encoder
     ProcessEncoder();
@@ -162,7 +169,8 @@ int main(void) {
     // determine initial mode
     mode = mode_last = ProcessToggleSwitch();
 
-    while(1) {
+    while(1)
+    {
     	i++;
 
 		// Do UI stuff
@@ -170,11 +178,11 @@ int main(void) {
 		diff = ProcessEncoder();
     	mode = ProcessToggleSwitch();
 
-    	if (mode == MODE_SETPOINT)
-    		setpoint = &exec_sp;
-    	else if (mode == MODE_MANUAL)
-    		setpoint = &manual_sp;
-    	// FIXME: setpoint isn't set for MODE_EXECUTE
+    	setpoint = setpoints[mode];
+    	ex_mode = (mode == MODE_EXECUTE);
+
+    	if (ex_mode && !ex_last)
+    		ex_going = manual_sp;
 
 		if (diff && mode == MODE_SETPOINT)
 			exec_sp = mod_setpoint(exec_sp, diff);
@@ -190,26 +198,14 @@ int main(void) {
 		{
 			sum /= count;
 			sum2 /= count;
+			curr_sp = conv_to_setpoint(sum2);
+
+			set_mode(LVDT_DISP, !(mode == MODE_EXECUTE));
+
 			SysTick->CTRL &=~1;
-		//	update_display(LOADC_DISP, sum);
-
-			switch(mode)
-			{
-			case MODE_SETPOINT:
-				set_mode(LVDT_DISP,1);
-				update_display(LVDT_DISP,  *setpoint);
-				break;
-			case MODE_EXECUTE:
-				set_mode(LVDT_DISP,0);
-				update_display(LVDT_DISP,  conv_to_setpoint(sum2));
-				break;
-			case MODE_MANUAL:
-				set_mode(LVDT_DISP,1);
-				update_display(LVDT_DISP,  *setpoint);
-				break;
-			}
-
-			update_display(LOADC_DISP, conv_to_voltage(*setpoint));
+			update_display(LVDT_DISP,  *setpoint);
+//			update_display(LOADC_DISP, conv_to_voltage(*setpoint));
+			update_display(LOADC_DISP, sum2);
 			SysTick->CTRL |=1;
 
 			i = sum = sum2 = 0;
@@ -219,13 +215,36 @@ int main(void) {
 		{
 			if (mode == MODE_MANUAL)
 				dac_send(conv_to_voltage(*setpoint));
+
+			if (ex_mode)
+			{
+				int change = 0;
+
+				if (ex_going < exec_sp)
+					change = 100;
+				if (ex_going > exec_sp)
+					change = -100;
+
+				ex_going += change;
+
+				if (ex_going > 3000)
+					ex_going = 3000;
+
+				if (ex_going < -3000)
+					ex_going = -3000;
+
+				dac_send(conv_to_voltage(ex_going));
+			}
 		}
 
 		if (mode != mode_last)
-			if (mode == MODE_MANUAL)
+		{
+//			if (mode == MODE_MANUAL)
 				manual_sp = update_manual_sp();
+		}
 
 		mode_last = mode;
+		ex_last = ex_mode;
 	}
 	return 0 ;
 }
