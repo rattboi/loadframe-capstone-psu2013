@@ -19,19 +19,12 @@
 #include "adc.h"
 #include "dac.h"
 #include "sseg.h"
+#include "target_config.h"
 
 // Variable to store CRP value in. Will be placed automatically
 // by the linker when "Enable Code Read Protect" selected.
 // See crp.h header for more information
 __CRP const unsigned int CRP_WORD = CRP_NO_CRP ;
-
-// TODO: insert other include files here
-
-// TODO: insert other definitions and declarations here
-
-void ProcessTareButtons();
-int ProcessToggleSwitch();
-int ProcessEncoder();
 
 int ProcessButton(int port, int bit)
 {
@@ -66,29 +59,75 @@ int ProcessButton(int port, int bit)
 	return !(output[port][bit]);
 }
 
+void ProcessTareButtons()
+{
+	static int left_last = 0;
+	static int right_last = 0;
+
+	int left,right;
+
+	left =  ProcessButton(UI_PORT_B, UI_BUTTON_LEFT);
+	right = ProcessButton(UI_PORT_B, UI_BUTTON_RIGHT);
+
+	if (left && !left_last)
+		blink_left();
+
+	if (right && !right_last)
+		blink_right();
+
+	left_last = left;
+	right_last = right;
+}
+
+int ProcessToggleSwitch()
+{
+    return ((ProcessButton(UI_PORT_B, UI_TOGGLE_B) << 1) | ProcessButton(UI_PORT_B, UI_TOGGLE_A));
+}
+
+int ProcessEncoder()
+{
+	static int enc_last = 0;
+
+	int enc;
+	int rot_val;
+
+	int rots[4][4] = {{ 0, -1,  1,  0},
+					  { 1,  0,  0, -1},
+					  {-1,  0,  0,  1},
+					  { 0,  1, -1,  0}};
+
+	enc = (ProcessButton(UI_PORT_B, UI_ENC_B) << 1) | ProcessButton(UI_PORT_A, UI_ENC_A);
+
+	rot_val = rots[enc_last][enc];
+
+	enc_last = enc;
+
+	return rot_val;
+}
+
 void debug_init()
 {
-	GPIOSetDir( 0, 5, 1);
-	GPIOSetValue( 0,5,1);
-	GPIOSetDir( 0, 3, 1);
-	GPIOSetValue( 0,3,1);
-	GPIOSetDir( 0, 4, 1);
-	GPIOSetValue( 0,4,1);
+	GPIOSetDir(   UI_PORT_A, UI_DEBUG_LED_A, LED_ON);
+	GPIOSetValue( UI_PORT_A, UI_DEBUG_LED_A, LED_ON);
+	GPIOSetDir(   UI_PORT_A, UI_DEBUG_LED_B, LED_ON);
+	GPIOSetValue( UI_PORT_A, UI_DEBUG_LED_B, LED_ON);
+	GPIOSetDir(   UI_PORT_A, UI_DEBUG_LED_C, LED_ON);
+	GPIOSetValue( UI_PORT_A, UI_DEBUG_LED_C, LED_ON);
 }
 
 void ui_init()
 {
     // Set setpoint selection buttons as inputs
-    GPIOSetDir( 1, 5, 0);
-    GPIOSetDir( 1, 6, 0);
+    GPIOSetDir( UI_PORT_B, UI_BUTTON_LEFT,  IO_INPUT);
+    GPIOSetDir( UI_PORT_B, UI_BUTTON_RIGHT, IO_INPUT);
 
     // Set toggle lines as inputs
-    GPIOSetDir( 1, 2, 0);
-    GPIOSetDir( 1, 4, 0);
+    GPIOSetDir( UI_PORT_B, UI_TOGGLE_A, IO_INPUT);
+    GPIOSetDir( UI_PORT_B, UI_TOGGLE_B, IO_INPUT);
 
     // Set 2-bit encoder as inputs
-    GPIOSetDir( 0, 11, 0);
-    GPIOSetDir( 1, 0, 0);
+    GPIOSetDir( UI_PORT_A, UI_ENC_A,  IO_INPUT);
+    GPIOSetDir( UI_PORT_B, UI_ENC_B,  IO_INPUT);
 }
 
 uint16_t conv_to_voltage(int setpoint)
@@ -205,7 +244,8 @@ int main(void) {
 			SysTick->CTRL &=~1;
 			update_display(LVDT_DISP,  *setpoint);
 //			update_display(LOADC_DISP, conv_to_voltage(*setpoint));
-			update_display(LOADC_DISP, sum2);
+//			update_display(LOADC_DISP, sum2);
+			update_display(LOADC_DISP, sum);
 			SysTick->CTRL |=1;
 
 			i = sum = sum2 = 0;
@@ -225,6 +265,12 @@ int main(void) {
 				if (ex_going > exec_sp)
 					change = -100;
 
+				if (abs(ex_going - exec_sp) < 100)
+					change *= 0.1;
+
+				if (abs(ex_going - exec_sp) < 10)
+					change *= 0.1;
+
 				ex_going += change;
 
 				if (ex_going > 3000)
@@ -233,6 +279,7 @@ int main(void) {
 				if (ex_going < -3000)
 					ex_going = -3000;
 
+				manual_sp = ex_going;
 				dac_send(conv_to_voltage(ex_going));
 			}
 		}
@@ -240,66 +287,11 @@ int main(void) {
 		if (mode != mode_last)
 		{
 //			if (mode == MODE_MANUAL)
-				manual_sp = update_manual_sp();
+//				manual_sp = update_manual_sp();
 		}
 
 		mode_last = mode;
 		ex_last = ex_mode;
 	}
 	return 0 ;
-}
-
-void ProcessTareButtons()
-{
-	static int left_last = 0;
-	static int right_last = 0;
-
-	int left,right;
-
-	left =  ProcessButton(1,5);
-	right = ProcessButton(1,6);
-
-	if (left && !left_last)
-		blink_left();
-
-	if (right && !right_last)
-		blink_right();
-
-	left_last = left;
-	right_last = right;
-}
-
-int ProcessToggleSwitch()
-{
-	static int mode;
-    int switch1, switch2;
-
-	//Do toggle stuff
-    switch1 = ProcessButton(1,4);
-    switch2 = ProcessButton(1,2);
-
-    mode = ((switch1 << 1) | switch2);
-
-    return mode;
-}
-
-int ProcessEncoder()
-{
-	static int enc_last = 0;
-
-	int enc;
-	int rot_val;
-
-	int rots[4][4] = {{ 0, -1,  1,  0},
-					  { 1,  0,  0, -1},
-					  {-1,  0,  0,  1},
-					  { 0,  1, -1,  0}};
-
-	enc = (ProcessButton(1,0) << 1) | ProcessButton(0,11);
-
-	rot_val = rots[enc_last][enc];
-
-	enc_last = enc;
-
-	return rot_val;
 }
