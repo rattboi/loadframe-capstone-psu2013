@@ -9,6 +9,7 @@
 #include "adc.h"
 #include "ssp.h"
 #include "type.h"
+
 int adc_init() {
         SSP_IOConfig(0);
         SSP_Init(0);
