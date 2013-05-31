@@ -10,6 +10,9 @@
  *
 ******************************************************************************/
 
+#define IO_INPUT 0
+#define IO_OUTPUT 1
+
 #define LED_ON 1		// Level to set port to turn on led
 #define LED_OFF 0		// Level to set port to turn off led
 #define LED_TOGGLE_TICKS 10 // 100 ticks = 1 Hz flash rate
@@ -34,28 +37,18 @@
 #define LCD_RESET_BIT 5
 #define LCD_BACKLIGHT_BIT 1
 
-#define UI_BUTTONS_PORT 2
-#define UI_BUTTON_UP 5
-#define UI_BUTTON_DOWN 7
-#define UI_BUTTON_LEFT 4
-#define UI_BUTTON_RIGHT 8
-#define UI_BUTTON_OK 6
-#define UI_BUTTON_AUX 9
+#define UI_PORT_A         0
+#define UI_DEBUG_LED_A	  5
+#define UI_DEBUG_LED_B	  3
+#define UI_DEBUG_LED_C	  4
+#define UI_ENC_A 		  11
 
-#define CHAN_BUTTONS_PORT 3
-#define CHAN1_BUTTON 0
-#define CHAN2_BUTTON 1
-#define CHAN3_BUTTON 2
-#define CHAN4_BUTTON 3
-#define CHAN5_BUTTON 4
-#define CHAN6_BUTTON 5
-
-#define ADC_CHAN1 0
-#define ADC_CHAN2 1
-#define ADC_CHAN3 3
-#define ADC_CHAN4 5
-#define ADC_CHAN5 6
-#define ADC_CHAN6 7
+#define UI_PORT_B 		  1
+#define UI_ENC_B 		  0
+#define UI_TOGGLE_A		  2
+#define UI_TOGGLE_B		  4
+#define UI_BUTTON_LEFT    5
+#define UI_BUTTON_RIGHT   6
 
 /*********************************************************************************
 **                            End Of File
