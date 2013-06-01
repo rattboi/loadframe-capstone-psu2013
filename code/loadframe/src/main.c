@@ -21,6 +21,15 @@
 #include "sseg.h"
 #include "target_config.h"
 
+#define SP_MAX 3000 
+#define SP_MIN -3000
+ 
+#define RAM_MIN 6138 
+#define RAM_MAX 60204
+
+#define LVDT_MIN 8700
+#define LVDT_MAX 56300
+
 // Variable to store CRP value in. Will be placed automatically
 // by the linker when "Enable Code Read Protect" selected.
 // See crp.h header for more information
@@ -59,7 +68,7 @@ int ProcessButton(int port, int bit)
 	return !(output[port][bit]);
 }
 
-void ProcessTareButtons()
+void ProcessSetpointButtons()
 {
 	static int left_last = 0;
 	static int right_last = 0;
@@ -130,28 +139,55 @@ void ui_init()
     GPIOSetDir( UI_PORT_B, UI_ENC_B,  IO_INPUT);
 }
 
-uint16_t conv_to_voltage(int setpoint)
+uint16_t ram_sp_to_voltage(int setpoint)
 {
 	uint32_t maths;
 	uint16_t retval;
 
-//	maths = ((setpoint + 3000) * 65535)/6000;
-	maths = (((setpoint + 3000) * (60204 - 6138))/6000)+6138;
+	maths = (((setpoint + SP_MAX) * (RAM_MAX - RAM_MIN))/(SP_MAX - SP_MIN))+RAM_MIN;
 	retval = (uint16_t)maths;
 
 	return retval;
 }
 
-int conv_to_setpoint(uint16_t voltage)
+int lvdt_voltage_to_sp(uint16_t voltage)
 {
 	int maths;
 	int retval;
-	voltage = 65535 - voltage;
+	voltage = 65535 - voltage; //invert voltage
 
-	maths = ((((int)voltage - 8700) * 6000)/(56300 - 8700)-3000);
+    maths = ((((int)voltage - 8700) * 6000)/(56300 - 8700)-3000);
+
+//	maths = ((((int)voltage - LVDT_MIN) * (SP_MAX - SP_MIN))/(LVDT_MAX - LVDT_MIN) - SP_MAX);
 	retval = (int)maths;
 
 	return retval;
+}
+
+int mod_setpoint(int setpoint, int diff)
+{
+	int i;
+	int mult = 1;
+	int num_digits = get_blink_digit(LVDT_DISP);
+
+	for ( i = 0; i < num_digits; i++)
+		mult *= 10;
+
+	if (diff == -1) {
+		if (setpoint + (diff * mult) >= SP_MIN)
+			return setpoint + (diff * mult);
+		else
+			return SP_MIN;
+	}
+
+	if (diff == 1) {
+		if (setpoint + (diff * mult) <= SP_MAX)
+			return setpoint + (diff * mult);
+		else
+			return SP_MAX;
+	}
+
+	return setpoint;
 }
 
 int32_t update_manual_sp()
@@ -166,11 +202,11 @@ int32_t update_manual_sp()
 		sum += adc_data.lvdt;
     }
 
-    return conv_to_setpoint(sum/1024);
+    return lvdt_voltage_to_sp(sum/1024);
 }
 
 int main(void) {
-	volatile static uint16_t sample = 0 ;
+	const int EX_STEP = 1;
 	adc_channels adc_data;
     const int count = 1024;
     int i = 0;
@@ -213,7 +249,7 @@ int main(void) {
     	i++;
 
 		// Do UI stuff
-		ProcessTareButtons();
+		ProcessSetpointButtons();
 		diff = ProcessEncoder();
     	mode = ProcessToggleSwitch();
 
@@ -223,21 +259,24 @@ int main(void) {
     	if (ex_mode && !ex_last)
     		ex_going = manual_sp;
 
-		if (diff && mode == MODE_SETPOINT)
+    	if (diff)
+    		*setpoint = mod_setpoint(*setpoint, diff);
+
+/*		if (diff && mode == MODE_SETPOINT)
 			exec_sp = mod_setpoint(exec_sp, diff);
 
 		if (diff && mode == MODE_MANUAL)
 			manual_sp = mod_setpoint(manual_sp, diff);
+*/
 
 		adc_data = adc_read();
 		sum += adc_data.loadcell;
 		sum2 += adc_data.lvdt;
 
-		if (!(i % count))
-		{
+		if (!(i % count)) {
 			sum /= count;
 			sum2 /= count;
-			curr_sp = conv_to_setpoint(sum2);
+			curr_sp = lvdt_voltage_to_sp(sum2);
 
 			set_mode(LVDT_DISP, !(mode == MODE_EXECUTE));
 
@@ -245,49 +284,42 @@ int main(void) {
 			update_display(LVDT_DISP,  *setpoint);
 //			update_display(LOADC_DISP, conv_to_voltage(*setpoint));
 //			update_display(LOADC_DISP, sum2);
-			update_display(LOADC_DISP, sum);
+
+			if (!(mode == MODE_SETPOINT))
+				update_display(LOADC_DISP, sum);
+			else
+				update_display(LOADC_DISP, MAGIC_SET_NUM);
 			SysTick->CTRL |=1;
 
 			i = sum = sum2 = 0;
 		}
 
-		if (!(i % 256))
-		{
+		if (!(i % 256)) {
 			if (mode == MODE_MANUAL)
-				dac_send(conv_to_voltage(*setpoint));
+				dac_send(ram_sp_to_voltage(*setpoint));
 
-			if (ex_mode)
-			{
+			if (ex_mode) {
 				int change = 0;
 
-				if (ex_going < exec_sp)
-					change = 100;
-				if (ex_going > exec_sp)
-					change = -100;
+				change = exec_sp - ex_going;
 
-				if (abs(ex_going - exec_sp) < 100)
-					change *= 0.1;
+				if (change < -EX_STEP)
+					change = -EX_STEP;
 
-				if (abs(ex_going - exec_sp) < 10)
-					change *= 0.1;
+				if (change > EX_STEP)
+					change = EX_STEP;
 
 				ex_going += change;
 
-				if (ex_going > 3000)
-					ex_going = 3000;
+				if (ex_going > SP_MAX)
+					ex_going = SP_MAX;
 
-				if (ex_going < -3000)
-					ex_going = -3000;
+				if (ex_going < SP_MIN)
+					ex_going = SP_MIN;
 
 				manual_sp = ex_going;
-				dac_send(conv_to_voltage(ex_going));
+				dac_send(ram_sp_to_voltage(ex_going));
 			}
-		}
-
-		if (mode != mode_last)
-		{
-//			if (mode == MODE_MANUAL)
-//				manual_sp = update_manual_sp();
 		}
 
 		mode_last = mode;

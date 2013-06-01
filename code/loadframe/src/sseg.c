@@ -2,7 +2,7 @@
  * sseg.c
  *
  *  Created on: Apr 29, 2013
- *      Author: agoetz
+ *      Author: agoetz, bkanyid
  */
 
 #include "sseg.h"
@@ -71,24 +71,23 @@ void sendval(uint32_t disp, char value) {
 
 //converts a bcd number to 7seg value
 //segment ordering: .gfedcba
-uint8_t bcdto7seg(int8_t num)
-{
+uint8_t bcdto7seg(int8_t num) {
 	if (num < 0)
 		num *= -1;
 
-	switch(num)
-	{
+	switch(num) {
+	//numbers
 	case 0:
-		return 0x3f;
+		return 0b00111111;
 		break;
 	case 1:
-		return 0x06;
+		return 0b00000110;
 		break;
 	case 2:
 		return 0b01011011;
 		break;
 	case 3:
-		return 0x4f;
+		return 0b01001111;
 		break;
 	case 4:
 		return 0b01100110;
@@ -108,42 +107,60 @@ uint8_t bcdto7seg(int8_t num)
 	case 9:
 		return 0b01100111;
 		break;
+	// alpha
+	case 's':
+		return 0b01101101;
+		break;
+	case 'e':
+		return 0b01111001;
+		break;
+	case 't':
+		return 0b01111000;
+		break;
+	// default displays '-'
 	default:
-		return 0x40;
+		return 0b01000000;
 	}
 }
 
-void update_display(uint32_t disp, int32_t num){
+void update_display(uint32_t disp, int32_t num) {
 	int i;
+	const char set[6] = " set ";
 
-	if (num < 0)
-		writebuf[disp][4] = 0x40;
-	else
-		writebuf[disp][4] = 0x00;
+	// display negative sign if needed
+	writebuf[disp][4] = (num < 0 ? 0x40 : 0x00);
 
+	// when in setpoint mode, display "-SEt-" on the other display
+	if (num == MAGIC_SET_NUM) {
+		for (i = 0; i < 5; i++)
+			writebuf[disp][i] = bcdto7seg(set[4-i]);
+	} else {
+		for(i = 0; i < NUM_DIGS; i++) {
+			//LVDT's last char is <blank> or -, handled separately above
+			if (i == NUM_DIGS - 1 && disp == LVDT_DISP)
+				continue;
 
-	for(i = 0; i < NUM_DIGS; i++)
-	{
-		if (i == NUM_DIGS - 1 && disp == 1)
-			continue;
+			writebuf[disp][i] = bcdto7seg(num % 10);
 
-		writebuf[disp][i] = bcdto7seg(num % 10);
-		if(i == 3 && disp ==1)
-			writebuf[disp][i] |= 0x80;
-		num /= 10;
+			//LVDT's 4th char always has a decimal. Enable it.
+			if(i == 3 && disp == LVDT_DISP)
+				writebuf[disp][i] |= 0x80;
+
+			num /= 10;
+		}
 	}
 }
 
 void blink_left()
 {
-	if (sseg[1].blink_digit < NUM_DIGS - 2)
-		sseg[1].blink_digit++;
+	if (sseg[LVDT_DISP].blink_digit < NUM_DIGS-2)
+		sseg[LVDT_DISP].blink_digit++;
 }
 
 void blink_right()
 {
-	if (sseg[1].blink_digit > 0)
-		sseg[1].blink_digit--;
+	if (sseg[LVDT_DISP].blink_digit > 0)
+		sseg[LVDT_DISP].blink_digit--;
 }
 
 void set_mode(int disp, int mode)
@@ -151,27 +168,9 @@ void set_mode(int disp, int mode)
 	sseg[disp].mode = mode;
 }
 
-int mod_setpoint(int setpoint, int diff)
+int get_blink_digit(int disp)
 {
-	int mult = 1;
-	int i;
-
-	for ( i = 0; i < sseg[1].blink_digit; i++)
-		mult *= 10;
-
-	if (diff == -1)
-		if (setpoint + (diff * mult) >= -3000)
-			return setpoint + (diff * mult);
-		else
-			return -3000;
-
-	if (diff == 1)
-		if (setpoint + (diff * mult) <= 3000)
-			return setpoint + (diff * mult);
-		else
-			return 3000;
-
-	return setpoint;
+	return sseg[disp].blink_digit;
 }
 
 void SysTick_Handler(void) {
@@ -193,7 +192,7 @@ void SysTick_Handler(void) {
 			GPIOSetValue(sseg[i].PORT, sseg[i].COUNT_CP,0);
 			GPIOSetValue(sseg[i].PORT, sseg[i].COUNT_CP,1);
 		}
-		if (sseg[i].mode && sseg[i].blink_digit == character && blinkrate > 250)
+		if (sseg[i].mode && sseg[i].blink_digit == character && blinkrate > BLINK_RATE)
 			sendval(i, 0);
 		else
 			sendval(i, writebuf[i][character]);
