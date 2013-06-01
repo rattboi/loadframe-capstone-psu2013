@@ -21,14 +21,25 @@
 #include "sseg.h"
 #include "target_config.h"
 
-#define SP_MAX 3000 
 #define SP_MIN -3000
+#define SP_MAX 3000 
  
 #define RAM_MIN 6138 
 #define RAM_MAX 60204
 
 #define LVDT_MIN 8700
 #define LVDT_MAX 56300
+
+#define SCALED_MIN 0
+#define SCALED_MAX 20000
+
+#define LOADC_MIN 33000 
+#define LOADC_MAX 65535
+ 
+#define EX_STEP 1
+#define COUNT   1024
+
+//	maths = ((((int)voltage - LOADC_MIN) * (SCALED_MAX - SCALED_MIN))/(LOADC_MAX - LOADC_MIN) - SCALED_MAX);
 
 // Variable to store CRP value in. Will be placed automatically
 // by the linker when "Enable Code Read Protect" selected.
@@ -144,7 +155,7 @@ uint16_t ram_sp_to_voltage(int setpoint)
 	uint32_t maths;
 	uint16_t retval;
 
-	maths = (((setpoint + SP_MAX) * (RAM_MAX - RAM_MIN))/(SP_MAX - SP_MIN))+RAM_MIN;
+	maths = (((setpoint - SP_MIN) * (RAM_MAX - RAM_MIN))/(SP_MAX - SP_MIN))+RAM_MIN;
 	retval = (uint16_t)maths;
 
 	return retval;
@@ -156,12 +167,21 @@ int lvdt_voltage_to_sp(uint16_t voltage)
 	int retval;
 	voltage = 65535 - voltage; //invert voltage
 
-    maths = ((((int)voltage - 8700) * 6000)/(56300 - 8700)-3000);
+//    maths = ((((int)voltage - 8700) * 6000)/(56300 - 8700)-3000);
 
-//	maths = ((((int)voltage - LVDT_MIN) * (SP_MAX - SP_MIN))/(LVDT_MAX - LVDT_MIN) - SP_MAX);
+	maths = ((((int)voltage - LVDT_MIN) * (SP_MAX - SP_MIN))/(LVDT_MAX - LVDT_MIN) + SP_MIN);
 	retval = (int)maths;
 
 	return retval;
+}
+
+int loadc_voltage_to_scaled(uint16_t voltage)
+{
+	int maths;
+	int retval;
+
+	maths = ((((int)voltage - LOADC_MIN) * (SCALED_MAX - SCALED_MIN))/(LOADC_MAX - LOADC_MIN) + SCALED_MIN);
+	retval = (int)maths;
 }
 
 int mod_setpoint(int setpoint, int diff)
@@ -206,19 +226,18 @@ int32_t update_manual_sp()
 }
 
 int main(void) {
-	const int EX_STEP = 1;
 	adc_channels adc_data;
-    const int count = 1024;
     int i = 0;
     int ex_mode = 0, ex_last = 0;
 
     int mode, mode_last;
 
-    uint32_t sum;
-    uint32_t sum2;
+    uint32_t loadc_sum;
+    uint32_t lvdt_sum;
     int diff;
 
     int32_t exec_sp, curr_sp, manual_sp;
+    int32_t loadc_scaled;
     int32_t ex_going;
     int32_t *setpoint, *setpoints[NUM_MODES];
 
@@ -270,28 +289,23 @@ int main(void) {
 */
 
 		adc_data = adc_read();
-		sum += adc_data.loadcell;
-		sum2 += adc_data.lvdt;
+		loadc_sum += adc_data.loadcell;
+		lvdt_sum += adc_data.lvdt;
 
-		if (!(i % count)) {
-			sum /= count;
-			sum2 /= count;
-			curr_sp = lvdt_voltage_to_sp(sum2);
+		if (!(i % COUNT)) {
+			loadc_sum /= COUNT;
+			lvdt_sum /= COUNT;
+			curr_sp = lvdt_voltage_to_sp(lvdt_sum);
+			loadc_scaled = loadc_voltage_to_scaled(loadc_sum);
 
 			set_mode(LVDT_DISP, !(mode == MODE_EXECUTE));
 
 			SysTick->CTRL &=~1;
 			update_display(LVDT_DISP,  *setpoint);
-//			update_display(LOADC_DISP, conv_to_voltage(*setpoint));
-//			update_display(LOADC_DISP, sum2);
-
-			if (!(mode == MODE_SETPOINT))
-				update_display(LOADC_DISP, sum);
-			else
-				update_display(LOADC_DISP, MAGIC_SET_NUM);
+			update_display(LOADC_DISP, (mode == MODE_SETPOINT ? MAGIC_SET_NUM : loadc_scaled));
 			SysTick->CTRL |=1;
 
-			i = sum = sum2 = 0;
+			i = loadc_sum = lvdt_sum = 0;
 		}
 
 		if (!(i % 256)) {
