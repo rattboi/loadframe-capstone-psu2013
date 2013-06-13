@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon 27 May 2013 12:28:10 PM PDT
+EESchema Schematic File Version 2  date Wed 12 Jun 2013 07:38:58 PM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -30,14 +30,13 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:custom
-LIBS:frame-control-cache
 EELAYER 27 0
 EELAYER END
 $Descr User 11000 8500
 encoding utf-8
 Sheet 1 4
 Title ""
-Date "27 may 2013"
+Date "13 jun 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -848,7 +847,7 @@ F0 "InterfaceButtons" 50
 F1 "Interface.sch" 50
 F2 "EncoderA" I L 7700 1350 60 
 F3 "EncoderB" I L 7700 1450 60 
-F4 "ESTOP" I L 7700 1550 60 
+F4 "ToggleSpeed" I L 7700 1550 60 
 F5 "ToggleA" I L 7700 1650 60 
 F6 "ToggleB" I L 7700 1750 60 
 F7 "TareLVDT" I L 7700 1850 60 

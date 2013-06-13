@@ -15,6 +15,7 @@
 #include <cr_section_macros.h>
 #include <NXP/crp.h>
 #include "gpio.h"
+#include "timer32.h"
 #include <stdint.h>
 #include "adc.h"
 #include "dac.h"
@@ -101,7 +102,9 @@ void ProcessSetpointButtons()
 
 int ProcessToggleSwitch()
 {
-    return ((ProcessButton(UI_PORT_B, UI_TOGGLE_B) << 1) | ProcessButton(UI_PORT_B, UI_TOGGLE_A));
+    return ((ProcessButton(UI_PORT_B, UI_TOGGLE_SPEED) << 2) |
+    		(ProcessButton(UI_PORT_B, UI_TOGGLE_B) << 1) |
+    		 ProcessButton(UI_PORT_B, UI_TOGGLE_A));
 }
 
 int ProcessEncoder()
@@ -148,6 +151,9 @@ void ui_init()
     // Set 2-bit encoder as inputs
     GPIOSetDir( UI_PORT_A, UI_ENC_A,  IO_INPUT);
     GPIOSetDir( UI_PORT_B, UI_ENC_B,  IO_INPUT);
+
+    // Set up new speed toggle switch
+    GPIOSetDir( UI_PORT_B, UI_TOGGLE_SPEED, IO_INPUT);
 }
 
 uint16_t ram_sp_to_voltage(int setpoint)
@@ -182,6 +188,8 @@ int loadc_voltage_to_scaled(uint16_t voltage)
 
 	maths = ((((int)voltage - LOADC_MIN) * (SCALED_MAX - SCALED_MIN))/(LOADC_MAX - LOADC_MIN) + SCALED_MIN);
 	retval = (int)maths;
+
+	return retval;
 }
 
 int mod_setpoint(int setpoint, int diff)
@@ -236,15 +244,24 @@ int main(void) {
     uint32_t lvdt_sum;
     int diff;
 
-    int32_t exec_sp, curr_sp, manual_sp;
+    int32_t exec_sp, curr_sp, manual_sp, speed_sp;
     int32_t loadc_scaled;
     int32_t ex_going;
     int32_t *setpoint, *setpoints[NUM_MODES];
 
     exec_sp = curr_sp = manual_sp = 0;
+    speed_sp = EX_STEP;
+
     setpoints[MODE_SETPOINT] = &exec_sp;
     setpoints[MODE_MANUAL]   = &manual_sp;
     setpoints[MODE_EXECUTE]  = &curr_sp;
+    setpoints[MODE_UNUSED]   = 0;
+    setpoints[MODE_SPEED]    = &speed_sp;
+    setpoints[MODE_SPEED_2]  = &speed_sp;
+    setpoints[MODE_SPEED_3]  = &speed_sp;
+
+    init_timer32(0, TIME_INTERVAL);
+    enable_timer32(0);
 
 	GPIOInit();
 	dac_init();
@@ -272,7 +289,8 @@ int main(void) {
 		diff = ProcessEncoder();
     	mode = ProcessToggleSwitch();
 
-    	setpoint = setpoints[mode];
+		setpoint = setpoints[mode];
+
     	ex_mode = (mode == MODE_EXECUTE);
 
     	if (ex_mode && !ex_last)
@@ -281,12 +299,12 @@ int main(void) {
     	if (diff)
     		*setpoint = mod_setpoint(*setpoint, diff);
 
-/*		if (diff && mode == MODE_SETPOINT)
-			exec_sp = mod_setpoint(exec_sp, diff);
-
-		if (diff && mode == MODE_MANUAL)
-			manual_sp = mod_setpoint(manual_sp, diff);
-*/
+    	if (mode > 3)
+    		if (timer32_0_counter > 100)
+    		{
+				speed_sp += 1;
+				timer32_0_counter = 0;
+    		}
 
 		adc_data = adc_read();
 		loadc_sum += adc_data.loadcell;
@@ -302,7 +320,11 @@ int main(void) {
 
 			SysTick->CTRL &=~1;
 			update_display(LVDT_DISP,  *setpoint);
-			update_display(LOADC_DISP, (mode == MODE_SETPOINT ? MAGIC_SET_NUM : loadc_scaled));
+			update_display(LOADC_DISP, (mode == MODE_SETPOINT ?
+											MAGIC_SET_NUM :
+											(mode > 3 ?
+												MAGIC_SPEED_NUM :
+												loadc_scaled)));
 			SysTick->CTRL |=1;
 
 			i = loadc_sum = lvdt_sum = 0;

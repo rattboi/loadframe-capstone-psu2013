@@ -12,12 +12,17 @@
 #define LOADC_DISP 0
 #define LVDT_DISP  1
 
-#define NUM_MODES     3
+#define NUM_MODES     7
 #define MODE_SETPOINT 0
 #define MODE_EXECUTE  1
 #define MODE_MANUAL   2
+#define MODE_UNUSED   3
+#define MODE_SPEED    4
+#define MODE_SPEED_2  5
+#define MODE_SPEED_3  6
 
-#define MAGIC_SET_NUM 123456
+#define MAGIC_SET_NUM   123456
+#define MAGIC_SPEED_NUM 123457
 
 #define BLINK_RATE 250
 

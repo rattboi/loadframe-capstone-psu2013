@@ -107,7 +107,7 @@ uint8_t bcdto7seg(int8_t num) {
 	case 9:
 		return 0b01100111;
 		break;
-	// alpha
+	// set
 	case 's':
 		return 0b01101101;
 		break;
@@ -116,6 +116,13 @@ uint8_t bcdto7seg(int8_t num) {
 		break;
 	case 't':
 		return 0b01111000;
+		break;
+	// speed
+	case 'p':
+		return 0b01110011;
+		break;
+	case 'd':
+		return 0b01011110;
 		break;
 	// default displays '-'
 	default:
@@ -126,15 +133,23 @@ uint8_t bcdto7seg(int8_t num) {
 void update_display(uint32_t disp, int32_t num) {
 	int i;
 	const char set[6] = " set ";
+	const char speed[6] = "speed";
 
 	// display negative sign if needed
 	writebuf[disp][4] = (num < 0 ? 0x40 : 0x00);
 
 	// when in setpoint mode, display "-SEt-" on the other display
-	if (num == MAGIC_SET_NUM) {
+	switch (num)
+	{
+	case MAGIC_SET_NUM:
 		for (i = 0; i < 5; i++)
 			writebuf[disp][i] = bcdto7seg(set[4-i]);
-	} else {
+		break;
+	case MAGIC_SPEED_NUM:
+		for (i = 0; i < 5; i++)
+			writebuf[disp][i] = bcdto7seg(speed[4-i]);
+		break;
+	default:
 		for(i = 0; i < NUM_DIGS; i++) {
 			//LVDT's last char is <blank> or -, handled separately above
 			if (i == NUM_DIGS - 1 && disp == LVDT_DISP)

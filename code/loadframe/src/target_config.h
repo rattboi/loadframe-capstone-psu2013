@@ -25,6 +25,7 @@
 
 #define UI_PORT_B 		  1
 #define UI_ENC_B 		  0
+#define UI_TOGGLE_SPEED   1
 #define UI_TOGGLE_A		  2
 #define UI_TOGGLE_B		  4
 #define UI_BUTTON_LEFT    5

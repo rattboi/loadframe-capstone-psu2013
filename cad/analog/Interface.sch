@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon 27 May 2013 12:28:10 PM PDT
+EESchema Schematic File Version 2  date Wed 12 Jun 2013 07:38:58 PM PDT
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -30,14 +30,13 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:custom
-LIBS:frame-control-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 4 4
 Title ""
-Date "27 may 2013"
+Date "13 jun 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -50,7 +49,7 @@ EncoderA
 Text HLabel 4600 4600 0    60   Input ~ 0
 EncoderB
 Text HLabel 4600 4200 0    60   Input ~ 0
-ESTOP
+ToggleSpeed
 Text HLabel 4600 4300 0    60   Input ~ 0
 ToggleA
 Text HLabel 4600 4400 0    60   Input ~ 0
