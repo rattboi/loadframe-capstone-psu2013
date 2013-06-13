@@ -39,6 +39,7 @@
  
 #define EX_STEP 1
 #define COUNT   1024
+#define FIXED_SCALE 1000
 
 //	maths = ((((int)voltage - LOADC_MIN) * (SCALED_MAX - SCALED_MIN))/(LOADC_MAX - LOADC_MIN) - SCALED_MAX);
 
@@ -102,9 +103,11 @@ void ProcessSetpointButtons()
 
 int ProcessToggleSwitch()
 {
-    return ((ProcessButton(UI_PORT_B, UI_TOGGLE_SPEED) << 2) |
-    		(ProcessButton(UI_PORT_B, UI_TOGGLE_B) << 1) |
-    		 ProcessButton(UI_PORT_B, UI_TOGGLE_A));
+	if (ProcessButton(UI_PORT_B, UI_TOGGLE_SPEED))
+		return 3;
+	else
+		return (ProcessButton(UI_PORT_B, UI_TOGGLE_B) << 1) |
+    		 ProcessButton(UI_PORT_B, UI_TOGGLE_A);
 }
 
 int ProcessEncoder()
@@ -249,16 +252,13 @@ int main(void) {
     int32_t ex_going;
     int32_t *setpoint, *setpoints[NUM_MODES];
 
-    exec_sp = curr_sp = manual_sp = 0;
+    exec_sp = curr_sp = manual_sp = ex_going = 0;
     speed_sp = EX_STEP;
 
     setpoints[MODE_SETPOINT] = &exec_sp;
     setpoints[MODE_MANUAL]   = &manual_sp;
-    setpoints[MODE_EXECUTE]  = &curr_sp;
-    setpoints[MODE_UNUSED]   = 0;
+    setpoints[MODE_EXECUTE]  = &manual_sp;
     setpoints[MODE_SPEED]    = &speed_sp;
-    setpoints[MODE_SPEED_2]  = &speed_sp;
-    setpoints[MODE_SPEED_3]  = &speed_sp;
 
     init_timer32(0, TIME_INTERVAL);
     enable_timer32(0);
@@ -294,17 +294,10 @@ int main(void) {
     	ex_mode = (mode == MODE_EXECUTE);
 
     	if (ex_mode && !ex_last)
-    		ex_going = manual_sp;
+    		ex_going = (manual_sp * (FIXED_SCALE));
 
     	if (diff)
     		*setpoint = mod_setpoint(*setpoint, diff);
-
-    	if (mode > 3)
-    		if (timer32_0_counter > 100)
-    		{
-				speed_sp += 1;
-				timer32_0_counter = 0;
-    		}
 
 		adc_data = adc_read();
 		loadc_sum += adc_data.loadcell;
@@ -313,7 +306,7 @@ int main(void) {
 		if (!(i % COUNT)) {
 			loadc_sum /= COUNT;
 			lvdt_sum /= COUNT;
-			curr_sp = lvdt_voltage_to_sp(lvdt_sum);
+			//curr_sp = lvdt_voltage_to_sp(lvdt_sum);
 			loadc_scaled = loadc_voltage_to_scaled(loadc_sum);
 
 			set_mode(LVDT_DISP, !(mode == MODE_EXECUTE));
@@ -322,7 +315,7 @@ int main(void) {
 			update_display(LVDT_DISP,  *setpoint);
 			update_display(LOADC_DISP, (mode == MODE_SETPOINT ?
 											MAGIC_SET_NUM :
-											(mode > 3 ?
+											(mode == MODE_SPEED ?
 												MAGIC_SPEED_NUM :
 												loadc_scaled)));
 			SysTick->CTRL |=1;
@@ -330,31 +323,37 @@ int main(void) {
 			i = loadc_sum = lvdt_sum = 0;
 		}
 
-		if (!(i % 256)) {
+		if (!(i % 256))
 			if (mode == MODE_MANUAL)
 				dac_send(ram_sp_to_voltage(*setpoint));
 
-			if (ex_mode) {
+		if (speed_sp < 0)
+			speed_sp = 0;
+
+		if (ex_mode) {
+			if (timer32_0_counter > 1 )
+			{
 				int change = 0;
 
-				change = exec_sp - ex_going;
+				change = (exec_sp * (FIXED_SCALE)) - ex_going;
 
-				if (change < -EX_STEP)
-					change = -EX_STEP;
+				if (change < -speed_sp)
+					change = -speed_sp;
 
-				if (change > EX_STEP)
-					change = EX_STEP;
+				if (change > speed_sp)
+					change = speed_sp;
 
 				ex_going += change;
 
-				if (ex_going > SP_MAX)
-					ex_going = SP_MAX;
+				if (ex_going > (SP_MAX * (FIXED_SCALE)))
+					ex_going = (SP_MAX * (FIXED_SCALE));
 
-				if (ex_going < SP_MIN)
-					ex_going = SP_MIN;
+				if (ex_going < (SP_MIN * (FIXED_SCALE)))
+					ex_going = (SP_MIN * (FIXED_SCALE));
 
-				manual_sp = ex_going;
-				dac_send(ram_sp_to_voltage(ex_going));
+				manual_sp = (ex_going / (FIXED_SCALE));
+				dac_send(ram_sp_to_voltage(ex_going / (FIXED_SCALE)));
+				timer32_0_counter = 0;
 			}
 		}
 
